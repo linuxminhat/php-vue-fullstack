@@ -1,0 +1,667 @@
+{
+    "info": {
+      "name": "Simple Store - PHP Mastery",
+      "_postman_id": "9c7d3f42-5a8e-4e8e-9d31-htplus-bookstore-0001",
+      "description": "Postman collection for Simple Store (PHP MVC) on http://localhost:8080",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Home",
+        "item": [
+          {
+            "name": "Home - GET /",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": [""]
+              }
+            }
+          },
+          {
+            "name": "Home - POST / (login form submit)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "email",
+                    "value": "admin@htplus.bookstore",
+                    "type": "text"
+                  },
+                  {
+                    "key": "password",
+                    "value": "Admin@123",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": [""]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Auth",
+        "item": [
+          {
+            "name": "Auth - Login (Admin)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "email",
+                    "value": "admin@htplus.bookstore",
+                    "type": "text"
+                  },
+                  {
+                    "key": "password",
+                    "value": "Admin@123",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/auth/login",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["auth", "login"]
+              }
+            }
+          },
+          {
+            "name": "Auth - Create User (Staff)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "email",
+                    "value": "staff1@htplus.bookstore",
+                    "type": "text"
+                  },
+                  {
+                    "key": "password",
+                    "value": "Staff@123",
+                    "type": "text"
+                  },
+                  {
+                    "key": "full_name",
+                    "value": "Staff One",
+                    "type": "text"
+                  },
+                  {
+                    "key": "role",
+                    "value": "staff",
+                    "type": "text"
+                  },
+                  {
+                    "key": "is_active",
+                    "value": "1",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/auth/createUser",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["auth", "createUser"]
+              }
+            }
+          },
+          {
+            "name": "Auth - Logout",
+            "request": {
+              "method": "POST",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/auth/logout",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["auth", "logout"]
+              }
+            }
+          },
+          {
+            "name": "Auth - Get Auth Me",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/auth/getAuthMe",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["auth", "getAuthMe"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Categories (Admin)",
+        "item": [
+          {
+            "name": "Category - List All",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/admin/categories",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "categories"]
+              }
+            }
+          },
+          {
+            "name": "Category - Create",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "name",
+                    "value": "Programming Books",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/admin/categories/create",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "categories", "create"]
+              }
+            }
+          },
+          {
+            "name": "Category - Update",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "id",
+                    "value": "1",
+                    "type": "text"
+                  },
+                  {
+                    "key": "name",
+                    "value": "Programming & DevOps",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/admin/categories/update",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "categories", "update"]
+              }
+            }
+          },
+          {
+            "name": "Category - Delete",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "id",
+                    "value": "2",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/admin/categories/delete",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "categories", "delete"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Products (Admin)",
+        "item": [
+          {
+            "name": "Product - List All",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/admin/products",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "products"]
+              }
+            }
+          },
+          {
+            "name": "Product - Create",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "name",
+                    "value": "Clean Code",
+                    "type": "text"
+                  },
+                  {
+                    "key": "sku",
+                    "value": "BK-CC-001",
+                    "type": "text"
+                  },
+                  {
+                    "key": "category_id",
+                    "value": "1",
+                    "type": "text"
+                  },
+                  {
+                    "key": "price",
+                    "value": "350000",
+                    "type": "text"
+                  },
+                  {
+                    "key": "stock",
+                    "value": "100",
+                    "type": "text"
+                  },
+                  {
+                    "key": "description",
+                    "value": "Sách về clean code cho developer",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/admin/products/create",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "products", "create"]
+              }
+            }
+          },
+          {
+            "name": "Product - Update",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "id",
+                    "value": "1",
+                    "type": "text"
+                  },
+                  {
+                    "key": "name",
+                    "value": "Clean Code (2nd Edition)",
+                    "type": "text"
+                  },
+                  {
+                    "key": "sku",
+                    "value": "BK-CC-001",
+                    "type": "text"
+                  },
+                  {
+                    "key": "category_id",
+                    "value": "1",
+                    "type": "text"
+                  },
+                  {
+                    "key": "price",
+                    "value": "390000",
+                    "type": "text"
+                  },
+                  {
+                    "key": "stock",
+                    "value": "80",
+                    "type": "text"
+                  },
+                  {
+                    "key": "description",
+                    "value": "Bản cập nhật, thêm ví dụ thực tế hơn",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/admin/products/update",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "products", "update"]
+              }
+            }
+          },
+          {
+            "name": "Product - Delete",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "id",
+                    "value": "1",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/admin/products/delete",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "products", "delete"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Orders - Customer",
+        "item": [
+          {
+            "name": "Order - Create (Customer)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "customer_id",
+                    "value": "3",
+                    "type": "text"
+                  },
+                  {
+                    "key": "items[0][product_id]",
+                    "value": "2",
+                    "type": "text"
+                  },
+                  {
+                    "key": "items[0][quantity]",
+                    "value": "1",
+                    "type": "text"
+                  },
+                  {
+                    "key": "items[1][product_id]",
+                    "value": "3",
+                    "type": "text"
+                  },
+                  {
+                    "key": "items[1][quantity]",
+                    "value": "2",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/orders",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["orders"]
+              }
+            }
+          },
+          {
+            "name": "Order - My Orders",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/orders/my",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["orders", "my"]
+              }
+            }
+          },
+          {
+            "name": "Order - My Order Detail",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/orders/my/detail?order_id=5",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["orders", "my", "detail"],
+                "query": [
+                  {
+                    "key": "order_id",
+                    "value": "5"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Orders - Admin/Staff",
+        "item": [
+          {
+            "name": "Order - Create For Customer (By Staff)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "customer_id",
+                    "value": "4",
+                    "type": "text"
+                  },
+                  {
+                    "key": "created_by",
+                    "value": "2",
+                    "type": "text"
+                  },
+                  {
+                    "key": "items[0][product_id]",
+                    "value": "2",
+                    "type": "text"
+                  },
+                  {
+                    "key": "items[0][quantity]",
+                    "value": "3",
+                    "type": "text"
+                  },
+                  {
+                    "key": "items[1][product_id]",
+                    "value": "5",
+                    "type": "text"
+                  },
+                  {
+                    "key": "items[1][quantity]",
+                    "value": "1",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/admin/orders/create",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "orders", "create"]
+              }
+            }
+          },
+          {
+            "name": "Order - Admin List Orders",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/admin/orders",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "orders"]
+              }
+            }
+          },
+          {
+            "name": "Order - Admin Order Detail",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:8080/admin/orders/detail?order_id=10",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "orders", "detail"],
+                "query": [
+                  {
+                    "key": "order_id",
+                    "value": "10"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Order - Admin Update Status",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "order_id",
+                    "value": "10",
+                    "type": "text"
+                  },
+                  {
+                    "key": "status",
+                    "value": "completed",
+                    "type": "text"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "http://localhost:8080/admin/orders/update-status",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["admin", "orders", "update-status"]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+  

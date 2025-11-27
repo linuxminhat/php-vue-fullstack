@@ -1,0 +1,24 @@
+{
+    "name": "htplus/simple-store",
+    "description": "A mini inventory management project to master PHP",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^8.0",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Developer",
+            "email": "dev@example.com"
+        }
+    ],
+    "config": {
+        "optimize-autoloader": true
+    }
+}
