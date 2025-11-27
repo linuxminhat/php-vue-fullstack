@@ -232,5 +232,29 @@ class Product extends BaseModel{
     return array_map(fn($row) => self::mapRow($row), $rows);
 }
 
+    // Get related products by category (excluding current product)
+    public function getRelatedByCategory(int $categoryId, int $excludeProductId, int $limit = 4): array
+    {
+        if ($categoryId <= 0) {
+            return [];
+        }
+
+        $stmt = $this->db->prepare(
+            'SELECT * FROM products 
+             WHERE category_id = :category_id 
+             AND id != :exclude_id 
+             ORDER BY RAND() 
+             LIMIT :limit'
+        );
+        
+        $stmt->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+        $stmt->bindValue(':exclude_id', $excludeProductId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return array_map(fn($row) => self::mapRow($row), $rows);
+    }
 
 }

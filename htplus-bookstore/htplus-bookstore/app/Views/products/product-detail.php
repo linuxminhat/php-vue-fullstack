@@ -53,6 +53,74 @@
     </div>
 </div>
 
+<!-- You might also like section -->
+<?php if (!empty($related_products)): ?>
+<section class="bg-gray-50 py-16">
+    <div class="max-w-6xl mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-8">You might also like</h2>
+        
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <?php foreach ($related_products as $relatedProduct): ?>
+                <article class="relative group">
+                    <div class="bg-white rounded-lg shadow-sm hover:shadow-xl hover:-translate-y-2 transition p-3">
+                        <!-- Hardcover badge -->
+                        <div class="relative mb-3">
+                            <div class="absolute -top-3 left-0 bg-green-400 text-white text-[11px] px-3 py-1 rounded-sm z-10">
+                                HARDCOVER
+                            </div>
+                            
+                            <!-- Wishlist button -->
+                            <button class="absolute top-2 right-2 w-8 h-8 rounded-full border bg-white flex items-center justify-center text-green-500 text-lg hover:bg-green-50 transition z-10">
+                                ♡
+                            </button>
+
+                            <!-- Book image -->
+                            <a href="/product/<?= $relatedProduct->id ?>">
+                                <div class="bg-gray-50 border flex items-center justify-center aspect-[3/4] overflow-hidden">
+                                    <?php if (!empty($relatedProduct->image)): ?>
+                                        <img src="<?= View::e($relatedProduct->image) ?>"
+                                             alt="<?= View::e($relatedProduct->name) ?>"
+                                             class="w-full h-full object-cover group-hover:scale-105 transition">
+                                    <?php else: ?>
+                                        <span class="text-gray-400 text-xs">No image</span>
+                                    <?php endif; ?>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Book info -->
+                        <a href="/product/<?= $relatedProduct->id ?>">
+                            <h3 class="font-semibold text-sm mb-1 hover:text-green-600 transition line-clamp-2">
+                                <?= View::e($relatedProduct->name) ?>
+                            </h3>
+                        </a>
+
+                        <?php if (!empty($relatedProduct->author)): ?>
+                            <p class="text-xs text-gray-500 mb-2">
+                                By <?= View::e($relatedProduct->author) ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <p class="text-sm font-bold text-gray-800 mb-3">
+                            <?= View::currency($relatedProduct->price) ?>
+                        </p>
+
+                        <!-- Add to cart button -->
+                        <button
+                            onclick="addToCart(<?= $relatedProduct->id ?>)"
+                            data-product-id="<?= $relatedProduct->id ?>"
+                            data-product-price="<?= $relatedProduct->price ?>"
+                            class="w-full bg-green-400 hover:bg-green-500 text-white text-xs font-semibold py-2 flex items-center justify-center gap-2 rounded transition">
+                            <span>🛒</span><span>Add To Cart</span>
+                        </button>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <script>
 function addToCartDetail() {
     const qty = parseInt(document.getElementById('qty').value) || 1;
@@ -90,5 +158,34 @@ function orderNow() {
     const qty = document.getElementById('qty').value || 1;
     const productId = <?= $product->id ?>;
     window.location.href = `/checkout?product=${productId}&qty=${qty}`;
+}
+
+// Add to cart for related products
+function addToCart(productId) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: 1,
+            price: parseFloat(event.target.closest('button').dataset.productPrice)
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+            alert(data.message || 'Có lỗi xảy ra');
+            return;
+        }
+        const cartCountEl = document.getElementById('cart-count');
+        if (cartCountEl && data.cart_count) {
+            cartCountEl.innerText = data.cart_count;
+        }
+        alert('Đã thêm vào giỏ hàng!');
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Lỗi kết nối, vui lòng thử lại!');
+    });
 }
 </script>

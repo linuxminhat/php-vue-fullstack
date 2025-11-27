@@ -279,10 +279,22 @@ public function shop(): void
             echo "Product Not Found";
             return;
         }
+        
+        // Get related products from the same category
+        $relatedProducts = [];
+        if ($product->category_id) {
+            $relatedProducts = $productModel->getRelatedByCategory(
+                $product->category_id, 
+                $product->id, 
+                4  // Limit to 4 related products
+            );
+        }
+        
         \App\Core\View::render('products.product-detail',[
             'title' => $product->name,
             'product' => $product,
-            'description' => $product->description, 
+            'description' => $product->description,
+            'related_products' => $relatedProducts,
         ], 'main');
     }
     
