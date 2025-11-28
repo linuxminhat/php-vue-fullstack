@@ -80,7 +80,14 @@ function updateQty(cartItemId, qty) {
     .then(res => res.json())
     .then(data => {
         if (!data.success) alert(data.message);
-        else location.reload();
+        else {
+            // Use Turbo visit instead of location.reload()
+            if (typeof Turbo !== 'undefined') {
+                Turbo.visit(window.location.href, { action: 'replace' });
+            } else {
+                location.reload();
+            }
+        }
     });
 }
 
@@ -91,6 +98,13 @@ function removeItem(id) {
         body: JSON.stringify({ cart_item_id: id })
     })
     .then(res => res.json())
-    .then(data => location.reload());
+    .then(data => {
+        // Use Turbo visit instead of location.reload()
+        if (typeof Turbo !== 'undefined') {
+            Turbo.visit(window.location.href, { action: 'replace' });
+        } else {
+            location.reload();
+        }
+    });
 }
 </script>

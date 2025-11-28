@@ -267,16 +267,20 @@ document.getElementById('checkout-form').addEventListener('submit', function(e) 
         // Show success modal
         document.getElementById('success-modal').classList.remove('hidden');
         
-        // Update cart count
-        const cartCountEl = document.getElementById('cart-count');
-        if (cartCountEl) {
-            cartCountEl.innerText = '0';
-        }
-        
-        // Redirect after 3 seconds
-        setTimeout(() => {
-            window.location.href = '/orders/my';
-        }, 3000);
+            // Update cart count
+            const cartCountEl = document.getElementById('cart-count');
+            if (cartCountEl) {
+                cartCountEl.innerText = '0';
+            }
+            
+            // Redirect after 3 seconds using Turbo
+            setTimeout(() => {
+                if (typeof Turbo !== 'undefined') {
+                    Turbo.visit('/orders/my');
+                } else {
+                    window.location.href = '/orders/my';
+                }
+            }, 3000);
     })
     .catch(err => {
         console.error(err);

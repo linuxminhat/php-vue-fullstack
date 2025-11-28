@@ -11,6 +11,9 @@
     <link rel="icon" href="/favicon.ico">    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="<?= View::asset('css/app.css') ?>">
+    
+    <!-- Turbo Drive - SPA Magic -->
+    <script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@7.3.0/dist/turbo.es2017-umd.js"></script>
 </head>
 
 <body class="bg-gray-50 text-gray-900">
@@ -20,6 +23,23 @@
     <?= $content ?>
 
     <script>
+    // Check if Turbo is loaded
+    if (typeof Turbo !== 'undefined') {
+        console.log('✅ Turbo is active!');
+        console.log('🚀 SPA mode: Links will not reload the page');
+    } else {
+        console.error('❌ Turbo failed to load');
+    }
+    
+    // Re-initialize scripts after Turbo navigation
+    document.addEventListener('turbo:load', function() {
+        console.log('🔄 Turbo navigated - Page changed without reload!');
+    });
+    
+    document.addEventListener('turbo:before-visit', function(event) {
+        console.log('⏩ Navigating to:', event.detail.url);
+    });
+    
     // Global cart functions
     function addToCart(productId, quantity = null) {
         const qtyInput = document.getElementById('qty');

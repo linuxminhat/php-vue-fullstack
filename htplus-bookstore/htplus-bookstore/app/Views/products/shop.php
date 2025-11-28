@@ -63,13 +63,13 @@
 
                     <div class="flex items-center gap-2 text-sm">
                         <span class="text-gray-600">Sort by:</span>
-                        <form method="get" class="flex items-center gap-2">
+                        <form method="get" class="flex items-center gap-2" data-turbo-frame="_top">
                             <!-- giữ lại các param khác khi đổi sort -->
                             <input type="hidden" name="q" value="<?= View::e($q ?? '') ?>">
                             <input type="hidden" name="category_id" value="<?= (int)($current_cat_id ?? 0) ?>">
 
                             <select name="sort" class="border rounded px-2 py-1 text-sm"
-                                    onchange="this.form.submit()">
+                                    onchange="this.form.requestSubmit()">
                                 <option value="title_az"     <?= ($current_sort ?? '') === 'title_az' ? 'selected' : '' ?>>Title A–Z</option>
                                 <option value="title_za"     <?= ($current_sort ?? '') === 'title_za' ? 'selected' : '' ?>>Title Z–A</option>
                                 <option value="price_low_high"  <?= ($current_sort ?? '') === 'price_low_high' ? 'selected' : '' ?>>Price: Low → High</option>
