@@ -6,14 +6,24 @@ namespace App\Controllers;
 
 use App\Core\BaseController;
 use App\Core\Auth;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Cart;
-use App\Models\CartItem;
-use App\Models\User;
+use App\Services\OrderService;
+use App\Services\CartService;
+use App\Services\UserService;
+use RuntimeException;
 
-class OrderController extends BaseController{
-    
+class OrderController extends BaseController
+{
+    private OrderService $orderService;
+    private CartService $cartService;
+    private UserService $userService;
+
+    public function __construct()
+    {
+        $this->orderService = new OrderService();
+        $this->cartService = new CartService();
+        $this->userService = new UserService();
+    }
+
     public function showCheckout(): void
     {
         if (!Auth::isLoggedIn()) {
@@ -22,14 +32,11 @@ class OrderController extends BaseController{
         }
 
         $userId = (int)Auth::id();
-        $cartModel = new Cart();
-        $cartItemModel = new CartItem();
-        $userModel = new User();
 
-        $cartId = $cartModel->getOrCreateCart($userId);
-        $items = $cartItemModel->listByCartId($cartId);
-        $total = $cartModel->getTotal($cartId);
-        $user = $userModel->findById($userId);
+        $cartId = $this->cartService->getOrCreateCart($userId);
+        $items = $this->cartService->getCartItems($cartId);
+        $total = $this->cartService->getCartTotal($cartId);
+        $user = $this->userService->getUserById($userId);
 
         if (empty($items)) {
             header('Location: /cart');
@@ -65,12 +72,8 @@ class OrderController extends BaseController{
             return;
         }
 
-        $cartModel = new Cart();
-        $cartItemModel = new CartItem();
-        $orderModel = new Order();
-
-        $cartId = $cartModel->getOrCreateCart($userId);
-        $cartItems = $cartItemModel->listByCartId($cartId);
+        $cartId = $this->cartService->getOrCreateCart($userId);
+        $cartItems = $this->cartService->getCartItems($cartId);
 
         if (empty($cartItems)) {
             $this->json([
@@ -90,11 +93,10 @@ class OrderController extends BaseController{
         }
 
         try {
-            $orderId = $orderModel->createOrder($userId, null, $orderItems, $phone, $address);
+            $orderId = $this->orderService->createOrder($userId, $orderItems, $phone, $address);
 
             // Clear cart after successful order
-            $cartItemModel->clear($cartId);
-            $cartModel->syncTotalAmount($cartId);
+            $this->cartService->clearCart($cartId);
             $_SESSION['cart_count'] = 0;
 
             $this->json([
@@ -111,25 +113,25 @@ class OrderController extends BaseController{
             ], 400);
         }
     }
-   
-    public function createForCustomer(): void {
+
+    public function createForCustomer(): void
+    {
         $user = $this->requireRole(['customer']);
-        $raw  = file_get_contents('php://input');
+        $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
         if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
             $data = $_POST;
         }
 
         $items = $data['items'] ?? [];
-        $orderModel = new Order();
 
         try {
-            $orderId = $orderModel->createOrder($user->id, null, $items);
+            $orderId = $this->orderService->createOrder($user->id, $items);
 
             $this->json([
                 'success' => true,
                 'message' => 'Order created successfully',
-                'data'    => [
+                'data' => [
                     'order_id' => $orderId,
                 ],
             ], 201);
@@ -140,18 +142,18 @@ class OrderController extends BaseController{
             ], 400);
         }
     }
-    
+
     public function createForCustomerByStaff(): void
     {
         $staff = $this->requireRole(['admin', 'staff']);
 
-        $raw  = file_get_contents('php://input');
+        $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
         if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
             $data = $_POST;
         }
         $customerId = (int)($data['customer_id'] ?? 0);
-        $items      = $data['items'] ?? [];
+        $items = $data['items'] ?? [];
 
         if ($customerId <= 0) {
             $this->json([
@@ -160,15 +162,13 @@ class OrderController extends BaseController{
             ], 422);
         }
 
-        $orderModel = new Order();
-
         try {
-            $orderId = $orderModel->createOrder($customerId, $staff->id, $items);
+            $orderId = $this->orderService->createOrder($customerId, $items, null, null, $staff->id);
 
             $this->json([
                 'success' => true,
                 'message' => 'Order created by staff',
-                'data'    => [
+                'data' => [
                     'order_id' => $orderId,
                 ],
             ], 201);
@@ -188,8 +188,7 @@ class OrderController extends BaseController{
         }
 
         $userId = (int)Auth::id();
-        $orderModel = new Order();
-        $orders = $orderModel->listByCustomer($userId);
+        $orders = $this->orderService->getCustomerOrders($userId);
 
         \App\Core\View::render('orders.my-orders', [
             'title' => 'My Orders - HTPLUS Book Store',
@@ -197,16 +196,53 @@ class OrderController extends BaseController{
         ], 'main');
     }
 
+    /**
+     * Show order detail page for customer (HTML view)
+     */
+    public function showOrderDetail($id): void
+    {
+        if (!Auth::isLoggedIn()) {
+            header('Location: /auth/login');
+            exit;
+        }
+
+        $orderId = (int)$id;
+        $userId = (int)Auth::id();
+
+        try {
+            // Get order and verify ownership
+            $order = $this->orderService->getCustomerOrder($orderId, $userId);
+            
+            if (!$order) {
+                http_response_code(404);
+                echo "Đơn hàng không tồn tại hoặc không thuộc về bạn.";
+                return;
+            }
+
+            // Get order items
+            $items = $this->orderService->getOrderItems($orderId);
+
+            \App\Core\View::render('orders.order-detail', [
+                'title' => 'Chi tiết đơn hàng #' . str_pad((string)$orderId, 6, '0', STR_PAD_LEFT),
+                'order' => $order,
+                'items' => $items,
+            ], 'main');
+
+        } catch (RuntimeException $e) {
+            http_response_code(404);
+            echo $e->getMessage();
+        }
+    }
+
     public function myOrdersApi(): void
     {
         $user = $this->requireRole(['customer']);
 
-        $orderModel = new Order();
-        $orders = $orderModel->listByCustomer($user->id);
+        $orders = $this->orderService->getCustomerOrders($user->id);
 
         $this->json([
             'success' => true,
-            'data'    => $orders,
+            'data' => $orders,
         ]);
     }
 
@@ -222,42 +258,47 @@ class OrderController extends BaseController{
             ], 422);
         }
 
-        $orderModel = new Order();
-        $itemModel  = new OrderItem();
+        try {
+            $order = $this->orderService->getCustomerOrder($id, $user->id);
+            if (!$order) {
+                $this->json([
+                    'success' => false,
+                    'message' => 'Order not found',
+                ], 404);
+                return;
+            }
 
-        $order = $orderModel->findByCustomer($id, $user->id);
-        if (!$order) {
+            $items = $this->orderService->getOrderItems($order->id);
+
+            $this->json([
+                'success' => true,
+                'data' => [
+                    'order' => $order,
+                    'items' => $items,
+                ],
+            ]);
+        } catch (RuntimeException $e) {
             $this->json([
                 'success' => false,
-                'message' => 'Order not found',
+                'message' => $e->getMessage(),
             ], 404);
         }
-
-        $items = $itemModel->findByOrderId($order->id);
-
-        $this->json([
-            'success' => true,
-            'data'    => [
-                'order' => $order,
-                'items' => $items,
-            ],
-        ]);
     }
 
     public function adminListOrders(): void
     {
         $this->requireRole(['admin', 'staff']);
 
-        $orderModel = new Order();
-        $orders = $orderModel->listAll();
+        $orders = $this->orderService->getAllOrders();
 
         $this->json([
             'success' => true,
-            'data'    => $orders,
+            'data' => $orders,
         ]);
     }
 
-    public function adminOrderDetail(): void{
+    public function adminOrderDetail(): void
+    {
         $this->requireRole(['admin', 'staff']);
 
         $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -268,38 +309,32 @@ class OrderController extends BaseController{
             ], 422);
         }
 
-        $orderModel = new Order();
-        $itemModel  = new OrderItem();
+        try {
+            $orderDetails = $this->orderService->getOrderDetails($id);
 
-        $order = $orderModel->findById($id);
-        if (!$order) {
+            $this->json([
+                'success' => true,
+                'data' => $orderDetails,
+            ]);
+        } catch (RuntimeException $e) {
             $this->json([
                 'success' => false,
-                'message' => 'Order not found',
+                'message' => $e->getMessage(),
             ], 404);
         }
-
-        $items = $itemModel->findByOrderId($order->id);
-
-        $this->json([
-            'success' => true,
-            'data'    => [
-                'order' => $order,
-                'items' => $items,
-            ],
-        ]);
     }
 
-    public function adminUpdateStatus(): void{
+    public function adminUpdateStatus(): void
+    {
         $this->requireRole(['admin', 'staff']);
 
-        $raw  = file_get_contents('php://input');
+        $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
         if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
             $data = $_POST;
         }
 
-        $id     = (int)($data['id'] ?? 0);
+        $id = (int)($data['id'] ?? 0);
         $status = $data['status'] ?? '';
 
         $allowed = ['pending', 'confirmed', 'shipped', 'delivered', 'completed', 'cancelled'];
@@ -307,27 +342,23 @@ class OrderController extends BaseController{
         if ($id <= 0 || !in_array($status, $allowed, true)) {
             $this->json([
                 'success' => false,
-                'message' => 'Invalid id or status',
+                'message' => 'Mã đơn hàng hoặc trạng thái không hợp lệ',
             ], 422);
             return;
         }
 
-        $orderModel = new Order();
-        $order = $orderModel->findById($id);
+        try {
+            $this->orderService->updateOrderStatus($id, $status);
 
-        if (!$order) {
+            $this->json([
+                'success' => true,
+                'message' => 'Đã cập nhật trạng thái đơn hàng thành công!',
+            ]);
+        } catch (RuntimeException $e) {
             $this->json([
                 'success' => false,
-                'message' => 'Order not found',
+                'message' => $e->getMessage(),
             ], 404);
-            return;
         }
-
-        $orderModel->updateStatus($id, $status);
-
-        $this->json([
-            'success' => true,
-            'message' => 'Order status updated',
-        ]);
     }
 }

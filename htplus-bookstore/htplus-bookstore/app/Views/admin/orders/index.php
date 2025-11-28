@@ -8,14 +8,14 @@
         <table class="min-w-full border-collapse">
             <thead class="bg-gray-100 border-b">
             <tr class="text-left">
-                <th class="py-3 px-4">Order ID</th>
-                <th class="py-3 px-4">Customer</th>
-                <th class="py-3 px-4">Phone</th>
-                <th class="py-3 px-4">Shipping Address</th>
-                <th class="py-3 px-4">Total Amount</th>
-                <th class="py-3 px-4">Status</th>
-                <th class="py-3 px-4">Created Date</th>
-                <th class="py-3 px-4">Action</th>
+                <th class="py-3 px-4">Mã đơn hàng</th>
+                <th class="py-3 px-4">Khách hàng</th>
+                <th class="py-3 px-4">Số điện thoại</th>
+                <th class="py-3 px-4">Địa chỉ giao hàng</th>
+                <th class="py-3 px-4">Tổng tiền</th>
+                <th class="py-3 px-4">Trạng thái</th>
+                <th class="py-3 px-4">Ngày tạo</th>
+                <th class="py-3 px-4">Hành động</th>
             </tr>
             </thead>
 
@@ -23,7 +23,7 @@
             <?php if (empty($orders)): ?>
                 <tr>
                     <td colspan="8" class="py-8 text-center text-gray-500">
-                        No orders found.
+                        Chưa có đơn hàng nào.
                     </td>
                 </tr>
             <?php else: ?>
@@ -31,7 +31,7 @@
                 <tr class="border-b hover:bg-gray-50">
                     <!-- Order ID -->
                     <td class="py-3 px-4 font-semibold">
-                        #<?= str_pad($order->id, 6, '0', STR_PAD_LEFT) ?>
+                        #<?= str_pad((string)$order->id, 6, '0', STR_PAD_LEFT) ?>
                     </td>
 
                     <!-- Customer Name -->
@@ -62,12 +62,13 @@
                     <td class="py-3 px-4">
                         <?php
                         $statusConfig = [
-                            'pending' => ['label' => 'Pending', 'class' => 'bg-yellow-100 text-yellow-800 border-yellow-300'],
-                            'confirmed' => ['label' => 'Confirmed', 'class' => 'bg-blue-100 text-blue-800 border-blue-300'],
-                            'shipped' => ['label' => 'Shipped', 'class' => 'bg-purple-100 text-purple-800 border-purple-300'],
-                            'delivered' => ['label' => 'Delivered', 'class' => 'bg-indigo-100 text-indigo-800 border-indigo-300'],
-                            'completed' => ['label' => 'Completed', 'class' => 'bg-green-100 text-green-800 border-green-300'],
-                            'cancelled' => ['label' => 'Cancelled', 'class' => 'bg-red-100 text-red-800 border-red-300'],
+                            'pending' => ['label' => 'Chờ xác nhận', 'class' => 'bg-yellow-100 text-yellow-800 border-yellow-300'],
+                            'confirmed' => ['label' => 'Đã xác nhận', 'class' => 'bg-blue-100 text-blue-800 border-blue-300'],
+                            'shipping' => ['label' => 'Đang giao hàng', 'class' => 'bg-purple-100 text-purple-800 border-purple-300'],
+                            'shipped' => ['label' => 'Đang giao hàng', 'class' => 'bg-purple-100 text-purple-800 border-purple-300'],
+                            'delivered' => ['label' => 'Đã giao hàng', 'class' => 'bg-indigo-100 text-indigo-800 border-indigo-300'],
+                            'completed' => ['label' => 'Hoàn thành', 'class' => 'bg-green-100 text-green-800 border-green-300'],
+                            'cancelled' => ['label' => 'Đã hủy', 'class' => 'bg-red-100 text-red-800 border-red-300'],
                         ];
                         $status = $statusConfig[$order->status] ?? ['label' => ucfirst($order->status), 'class' => 'bg-gray-100 text-gray-800 border-gray-300'];
                         ?>
@@ -91,7 +92,7 @@
                             data-address="<?= htmlspecialchars($order->shipping_address ?? '') ?>"
                             data-total="<?= number_format($order->total_amount, 0, ',', '.') ?>"
                             data-status="<?= $order->status ?>">
-                            Update Status
+                            Cập nhật
                         </button>
                     </td>
                 </tr>
@@ -107,7 +108,7 @@
 <div class="mt-4 flex justify-center space-x-2">
     <?php if ($page > 1): ?>
         <a href="/admin/orders?page=<?= $page - 1 ?>" 
-        class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Previous</a>
+        class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Trước</a>
     <?php endif; ?>
 
     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
@@ -120,7 +121,7 @@
 
     <?php if ($page < $totalPages): ?>
         <a href="/admin/orders?page=<?= $page + 1 ?>" 
-        class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Next</a>
+        class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Tiếp</a>
     <?php endif; ?>
 </div>
 <?php endif; ?>
@@ -128,7 +129,7 @@
 <!-- Update Status Modal -->
 <div id="updateModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
     <div class="bg-white w-full max-w-lg rounded-lg shadow-lg p-6 m-4">
-        <h2 class="text-xl font-bold mb-4">Update Order Status</h2>
+        <h2 class="text-xl font-bold mb-4">Cập nhật trạng thái đơn hàng</h2>
         
         <form id="updateForm" onsubmit="submitUpdateStatus(event)">
             <input type="hidden" name="id" id="update_id">
@@ -136,46 +137,47 @@
             <!-- Order Info (Read-only) -->
             <div class="bg-gray-50 p-4 rounded mb-4 space-y-2">
                 <div class="flex justify-between">
-                    <span class="text-gray-600">Order ID:</span>
+                    <span class="text-gray-600">Mã đơn hàng:</span>
                     <span class="font-semibold" id="display_order_id"></span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-600">Customer:</span>
+                    <span class="text-gray-600">Khách hàng:</span>
                     <span class="font-semibold" id="display_customer"></span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-600">Phone:</span>
+                    <span class="text-gray-600">Số điện thoại:</span>
                     <span id="display_phone"></span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-600">Total:</span>
+                    <span class="text-gray-600">Tổng tiền:</span>
                     <span class="font-semibold text-green-600" id="display_total"></span>
                 </div>
                 <div>
-                    <span class="text-gray-600">Address:</span>
+                    <span class="text-gray-600">Địa chỉ:</span>
                     <p class="text-sm mt-1" id="display_address"></p>
                 </div>
             </div>
 
             <!-- Status Selection -->
             <div class="mb-4">
-                <label class="block mb-2 font-semibold">Order Status <span class="text-red-500">*</span></label>
+                <label class="block mb-2 font-semibold">Trạng thái đơn hàng <span class="text-red-500">*</span></label>
                 <select name="status" id="update_status" required
                     class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500">
-                    <option value="pending">🟡 Pending - Chờ xác nhận</option>
-                    <option value="confirmed">🔵 Confirmed - Đã xác nhận</option>
-                    <option value="shipped">🟣 Shipped - Đang giao hàng</option>
-                    <option value="delivered">🟤 Delivered - Đã giao hàng</option>
-                    <option value="completed">🟢 Completed - Hoàn thành</option>
-                    <option value="cancelled">🔴 Cancelled - Đã hủy</option>
+                    <option value="pending">🟡 Chờ xác nhận</option>
+                    <option value="confirmed">🔵 Đã xác nhận</option>
+                    <option value="shipping">🟣 Đang giao hàng</option>
+                    <option value="shipped">🟣 Đang giao hàng</option>
+                    <option value="delivered">🟤 Đã giao hàng</option>
+                    <option value="completed">🟢 Hoàn thành</option>
+                    <option value="cancelled">🔴 Đã hủy</option>
                 </select>
-                <p class="text-xs text-gray-500 mt-1">Select the new status for this order</p>
+                <p class="text-xs text-gray-500 mt-1">Chọn trạng thái mới cho đơn hàng</p>
             </div>
 
             <!-- Note -->
             <div class="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4">
                 <p class="text-sm text-yellow-800">
-                    ⚠️ <strong>Note:</strong> Only order status can be changed. All other information is locked.
+                    ⚠️ <strong>Lưu ý:</strong> Chỉ có thể thay đổi trạng thái đơn hàng. Thông tin khác không thể sửa.
                 </p>
             </div>
 
@@ -183,11 +185,11 @@
             <div class="flex justify-end space-x-2">
                 <button type="button" id="closeUpdateModal" 
                         class="px-4 py-2 bg-gray-400 rounded text-white hover:bg-gray-500">
-                    Cancel
+                    Hủy
                 </button>
                 <button type="submit" id="updateBtn"
                         class="px-4 py-2 bg-blue-600 rounded text-white hover:bg-blue-700">
-                    Update Status
+                    Cập nhật
                 </button>
             </div>
         </form>
@@ -204,11 +206,11 @@
                 </svg>
             </div>
         </div>
-        <h3 class="text-xl font-bold text-gray-900 mb-2">Success!</h3>
-        <p id="successMessage" class="text-gray-600 mb-6">Order status updated successfully!</p>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Thành công!</h3>
+        <p id="successMessage" class="text-gray-600 mb-6">Đã cập nhật trạng thái đơn hàng thành công!</p>
         <button onclick="closeSuccessModal()" 
                 class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-            OK
+            Đồng ý
         </button>
     </div>
 </div>

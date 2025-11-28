@@ -6,41 +6,36 @@ namespace App\Controllers;
 
 use App\Core\BaseController;
 use App\Core\View;
-use App\Models\Product;
+use App\Services\ProductService;
 
 class HomeController extends BaseController
 {
-    public function index(): void {
+    private ProductService $productService;
 
-        $productModel = new Product();
+    public function __construct()
+    {
+        $this->productService = new ProductService();
+    }
 
+    public function index(): void
+    {
         $perPage = 8;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        if($page < 1) {
+        if ($page < 1) {
             $page = 1;
         }
-        
-        $totalProducts = $productModel->countAll();
-        $totalPages = (int) ceil ($totalProducts/$perPage);
 
-        if($totalPages<1){
-            $totalPages = 1;
-        }
+        $filters = [];
+        $sort = 'title_az';
 
-        if($page>$totalPages){
-            $page = $totalPages;
-        }
-        $offset = ($page-1) * $perPage;
-        $products = $productModel->getPaged($perPage, $offset);
+        $result = $this->productService->getShopProducts($filters, $sort, $page, $perPage);
 
         View::render('home.index', [
             'title' => 'HTPLUS Book Store - Trang chủ',
-            'products' => $products,
-            'page' => $page,
-            'total_pages' => $totalPages,
-            'total_products' => $totalProducts,
+            'products' => $result['products'],
+            'page' => $result['pagination']['page'],
+            'total_pages' => $result['pagination']['total_pages'],
+            'total_products' => $result['pagination']['total_products'],
         ], 'main');
     }
 }
-?>
- 

@@ -33,7 +33,7 @@
                             <div class="flex items-center gap-4">
                                 <div>
                                     <p class="text-sm text-gray-500">Mã đơn hàng</p>
-                                    <p class="font-semibold text-gray-800">#<?= str_pad($order->id, 6, '0', STR_PAD_LEFT) ?></p>
+                                    <p class="font-semibold text-gray-800">#<?= str_pad((string)$order->id, 6, '0', STR_PAD_LEFT) ?></p>
                                 </div>
                                 <div class="h-10 w-px bg-gray-300"></div>
                                 <div>
@@ -48,7 +48,9 @@
                                 $statusConfig = [
                                     'pending' => ['label' => 'Chờ xác nhận', 'class' => 'bg-yellow-100 text-yellow-800 border-yellow-300'],
                                     'confirmed' => ['label' => 'Đã xác nhận', 'class' => 'bg-blue-100 text-blue-800 border-blue-300'],
-                                    'shipping' => ['label' => 'Đang giao', 'class' => 'bg-purple-100 text-purple-800 border-purple-300'],
+                                    'shipping' => ['label' => 'Đang giao hàng', 'class' => 'bg-purple-100 text-purple-800 border-purple-300'],
+                                    'shipped' => ['label' => 'Đang giao hàng', 'class' => 'bg-purple-100 text-purple-800 border-purple-300'],
+                                    'delivered' => ['label' => 'Đã giao hàng', 'class' => 'bg-indigo-100 text-indigo-800 border-indigo-300'],
                                     'completed' => ['label' => 'Hoàn thành', 'class' => 'bg-green-100 text-green-800 border-green-300'],
                                     'cancelled' => ['label' => 'Đã hủy', 'class' => 'bg-red-100 text-red-800 border-red-300'],
                                 ];
@@ -114,10 +116,15 @@
                                     <span class="mr-2">⏳</span>
                                     Đơn hàng đang chờ xác nhận
                                 </span>
-                            <?php elseif ($order->status === 'shipping'): ?>
+                            <?php elseif (in_array($order->status, ['shipping', 'shipped'])): ?>
                                 <span class="flex items-center">
                                     <span class="mr-2">🚚</span>
                                     Đơn hàng đang được giao đến bạn
+                                </span>
+                            <?php elseif ($order->status === 'delivered'): ?>
+                                <span class="flex items-center text-blue-600">
+                                    <span class="mr-2">📦</span>
+                                    Đơn hàng đã được giao
                                 </span>
                             <?php elseif ($order->status === 'completed'): ?>
                                 <span class="flex items-center text-green-600">

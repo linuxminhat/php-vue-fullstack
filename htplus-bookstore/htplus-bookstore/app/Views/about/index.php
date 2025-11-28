@@ -60,7 +60,7 @@
 
         <a href="/"
            class="inline-block px-4 py-2 border border-white text-sm font-semibold hover:bg-white hover:text-black transition">
-            ← Back to Home
+            ← Về lại trang chủ 
         </a>
     </div>
 </section>

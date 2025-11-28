@@ -5,22 +5,31 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Core\BaseController;
-use App\Models\Category;
+use App\Services\CategoryService;
 use App\Core\View;
+use RuntimeException;
 
-class CategoryController extends BaseController {
-    
-    public function listAllCategory(): void{
-    $model = new Category();
-    $categories = $model->listAllCategory();
-    View::render('admin.category.index', [
-    'categories' => $categories,
-    'page' => $page ?? 1,
-    'totalPages' => $totalPages ?? 1
-    ], 'main');
+class CategoryController extends BaseController
+{
+    private CategoryService $categoryService;
 
+    public function __construct()
+    {
+        $this->categoryService = new CategoryService();
     }
-    public function createNewCategory(): void {
+
+    public function listAllCategory(): void
+    {
+        $categories = $this->categoryService->getAllCategories();
+        View::render('admin.category.index', [
+            'categories' => $categories,
+            'page' => $page ?? 1,
+            'totalPages' => $totalPages ?? 1
+        ], 'main');
+    }
+
+    public function createNewCategory(): void
+    {
         $rawBody = file_get_contents("php://input");
         $data = json_decode($rawBody, true);
         if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
@@ -35,17 +44,9 @@ class CategoryController extends BaseController {
             ], 422);
         }
 
-        $model = new Category();
-        $existing = $model->findByName($name);
-
-        if ($existing !== null) {
-            $this->json([
-                "success" => false,
-                "message" => "Category name already exist",
-            ], 400);
-        } else {
-            $id = $model->create($name);
-            $category = $model->findByID($id);
+        try {
+            $id = $this->categoryService->createCategory($name);
+            $category = $this->categoryService->getCategoryById($id);
             $this->json([
                 "success" => true,
                 "data" => [
@@ -53,9 +54,14 @@ class CategoryController extends BaseController {
                     "name" => $category->name,
                 ],
             ]);
+        } catch (RuntimeException $e) {
+            $this->json([
+                "success" => false,
+                "message" => $e->getMessage(),
+            ], 400);
         }
     }
-    
+
     public function updateCategory(): void
     {
         $rawBody = file_get_contents("php://input");
@@ -71,24 +77,23 @@ class CategoryController extends BaseController {
                 "message" => "Invalid id or name",
             ], 422);
         }
-        $model = new Category();
-        $category = $model->findById($id);
-        if (!$category) {
-            $this->json([
-                "success" => "false",
-                "message" => "Category not found",
-            ], 404);
-        } else {
-            $model->update($id, $name);
-            $category = $model->findById($id);
+
+        try {
+            $this->categoryService->updateCategory($id, $name);
+            $category = $this->categoryService->getCategoryById($id);
             $this->json([
                 "success" => "true",
                 "message" => "Update Category Successfully",
                 "data" => $category,
             ]);
+        } catch (RuntimeException $e) {
+            $this->json([
+                "success" => "false",
+                "message" => $e->getMessage(),
+            ], 404);
         }
     }
-    
+
     public function deleteCategory(): void
     {
         $rawBody = file_get_contents("php://input");
@@ -103,18 +108,18 @@ class CategoryController extends BaseController {
                 "message" => "Invalid ID",
             ], 422);
         }
-        $model = new Category();
-        $category = $model->findById($id);
-        if (!$category) {
+
+        try {
+            $this->categoryService->deleteCategory($id);
+            $this->json([
+                "success" => true,
+                "message" => "Delete Category Successfully",
+            ]);
+        } catch (RuntimeException $e) {
             $this->json([
                 "success" => false,
-                "message" => "Not Found A Categroy",
+                "message" => $e->getMessage(),
             ], 404);
         }
-        $model->delete($id);
-        $this->json([
-            "success" => true,
-            "message" => "Delete Category Successfully",
-        ]);
     }
 }

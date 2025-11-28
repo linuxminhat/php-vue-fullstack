@@ -2,6 +2,7 @@
 
 use App\Core\View;
 use App\Core\Auth;
+use App\Services\CategoryService;
 
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -13,7 +14,12 @@ if (!function_exists('nav_active')) {
             : 'text-gray-800 hover:text-green-600';
     }
 }
-$categories = $categories ?? (new \App\Models\Category())->listAllCategory();
+
+// Get categories using Service if not passed from controller
+if (!isset($categories)) {
+    $categoryService = new CategoryService();
+    $categories = $categoryService->getAllCategories();
+}
 
 ?>
 

@@ -5,13 +5,26 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Core\Auth;
-use App\Models\Product;
-use App\Models\Category;
-use App\Models\Order;
-use App\Models\User;
+use App\Services\ProductService;
+use App\Services\CategoryService;
+use App\Services\OrderService;
+use App\Services\UserService;
 
 class StaffController
 {
+    private ProductService $productService;
+    private CategoryService $categoryService;
+    private OrderService $orderService;
+    private UserService $userService;
+
+    public function __construct()
+    {
+        $this->productService = new ProductService();
+        $this->categoryService = new CategoryService();
+        $this->orderService = new OrderService();
+        $this->userService = new UserService();
+    }
+
     // Check if user is staff or admin
     private function requireStaffAccess(): void
     {
@@ -32,21 +45,20 @@ class StaffController
     {
         $this->requireStaffAccess();
 
-        $productModel = new Product();
-        $categoryModel = new Category();
-
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
-        $totalProducts = $productModel->countAll();
+        $products = $this->productService->getAllProducts();
+        $totalProducts = count($products);
         $totalPages = ceil($totalProducts / $limit);
-
-        $products = $productModel->getPaged($limit, $offset);
-        $categories = $categoryModel->listAllCategory();
+        
+        // Paginate manually
+        $paginatedProducts = array_slice($products, $offset, $limit);
+        $categories = $this->categoryService->getAllCategories();
 
         View::render('staff.products.index', [
-            'products' => $products,
+            'products' => $paginatedProducts,
             'categories' => $categories,
             'page' => $page,
             'totalPages' => $totalPages,
@@ -59,15 +71,12 @@ class StaffController
     {
         $this->requireStaffAccess();
 
-        $orderModel = new Order();
-        $userModel = new User();
-
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $limit = 15;
         $offset = ($page - 1) * $limit;
 
         // Get all orders
-        $allOrders = $orderModel->listAll();
+        $allOrders = $this->orderService->getAllOrders();
         $totalOrders = count($allOrders);
         $totalPages = ceil($totalOrders / $limit);
 
@@ -76,7 +85,7 @@ class StaffController
 
         // Attach customer names to orders
         foreach ($orders as $order) {
-            $user = $userModel->findById($order->customer_id);
+            $user = $this->userService->getUserById($order->customer_id);
             $order->customer_name = $user ? $user->full_name : 'Unknown';
         }
 

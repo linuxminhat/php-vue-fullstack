@@ -6,10 +6,17 @@ namespace App\Controllers;
 
 use App\Core\BaseController;
 use App\Core\Auth;
-use App\Models\User;
+use App\Services\UserService;
+use RuntimeException;
 
 class AuthController extends BaseController
 {
+    private UserService $userService;
+
+    public function __construct()
+    {
+        $this->userService = new UserService();
+    }
 
     public function showLogin(): void
     {
@@ -25,66 +32,72 @@ class AuthController extends BaseController
         ], 'auth');
     }
 
-    public function login():void{
+    public function login(): void
+    {
         $rawBody = file_get_contents("php://input");
         $data = json_decode($rawBody, true);
 
         $isJson = json_last_error() === JSON_ERROR_NONE && is_array($data);
-        if($isJson){
+        if ($isJson) {
             $email = $data["email"] ?? "";
             $password = $data["password"] ?? "";
-        }else {
+            $remember = (bool)($data["remember"] ?? false);
+        } else {
             $email = $_POST["email"] ?? "";
             $password = $_POST["password"] ?? "";
+            $remember = isset($_POST["remember"]);
         }
-        $userModel = new User();
-        $user = $userModel->findByEmail($email);
 
-        if(!$user || !password_verify($password, $user->password)){
-            if($isJson){
+        try {
+            $user = $this->userService->authenticate($email, $password);
+
+            if (!$user) {
+                if ($isJson) {
+                    $this->json([
+                        "success" => false,
+                        "message" => "Email hoặc mật khẩu không đúng!",
+                    ], 401);
+                } else {
+                    \App\Core\View::render('auth.login', [
+                        'title' => "Login",
+                        'error' => "⚠️ Email hoặc mật khẩu không đúng! Vui lòng thử lại.",
+                        'email' => $email, // Giữ lại email đã nhập
+                    ], 'auth');
+                }
+                return;
+            }
+
+            // Login with Remember Me option
+            Auth::login($user, $remember);
+            
+            if ($isJson) {
+                $this->json([
+                    "success" => true,
+                    "message" => "Đăng nhập thành công!",
+                    "data" => [
+                        'id' => $user->id,
+                        'email' => $user->email,
+                        'full_name' => $user->full_name,
+                        'role' => $user->role,
+                    ],
+                ]);
+            } else {
+                header('Location: /');
+                exit;
+            }
+        } catch (RuntimeException $e) {
+            if ($isJson) {
                 $this->json([
                     "success" => false,
-                    "message" => "Invalid Credentials",
-                ],401);
-            }else {
-                \App\Core\View::render('auth.login',[
-                    'title' => "Login",
-                    'error' => "Invalid Credentials",
-                ], 'auth');
-            }
-            return;
-        }
-
-        if(!$user->is_active){
-            if($isJson){
-                $this->json([
-                    "success"=>false,
-                    "message"=>"Account is inactive",
-                ],403);
-            }else {
+                    "message" => $e->getMessage(),
+                ], 403);
+            } else {
                 \App\Core\View::render('auth.login', [
                     'title' => "Login",
-                    "error" => "Account being locked",
-                ],'auth');
+                    "error" => "⚠️ " . $e->getMessage(),
+                    'email' => $email, // Giữ lại email đã nhập
+                ], 'auth');
             }
-            return;
-        }
-
-        Auth::login($user);
-        if($isJson){
-            $this->json([
-                "success"=>true,
-                "message"=>"Login successfully",
-                "data" => [
-                'id'        => $user->id,
-                'email'     => $user->email,
-                'full_name' => $user->full_name,
-                'role'      => $user->role,
-                ],
-            ]);
-        }else {
-            header('Location: /');
-            exit;
         }
     }
 
@@ -107,16 +120,16 @@ class AuthController extends BaseController
         $this->json([
             'success' => true,
             'data' => [
-                'id'        => $user->id,
-                'email'     => $user->email,
+                'id' => $user->id,
+                'email' => $user->email,
                 'full_name' => $user->full_name,
-                'role'      => $user->role,
+                'role' => $user->role,
             ],
         ]);
     }
-    
-    public function createUser(): void{
 
+    public function createUser(): void
+    {
         $rawBody = file_get_contents('php://input');
         $data = json_decode($rawBody, true);
 
@@ -124,11 +137,11 @@ class AuthController extends BaseController
             $data = $_POST;
         }
 
-        $email     = trim($data['email'] ?? '');
-        $password  = $data['password'] ?? '';
-        $fullName  = $data['full_name'] ?? null;
-        $role      = $data['role'] ?? 'customer';
-        
+        $email = trim($data['email'] ?? '');
+        $password = $data['password'] ?? '';
+        $fullName = $data['full_name'] ?? null;
+        $role = $data['role'] ?? 'customer';
+
         if ($email === '' || $password === '') {
             $this->json([
                 'success' => false,
@@ -137,36 +150,31 @@ class AuthController extends BaseController
             return;
         }
 
-        $userModel = new User();
+        try {
+            $id = $this->userService->createUser([
+                'email' => $email,
+                'password' => $password,
+                'full_name' => $fullName,
+                'role' => $role,
+                'is_active' => 1,
+            ]);
 
-        if ($userModel->findByEmail($email)) {
+            $user = $this->userService->getUserById($id);
+            $this->json([
+                'success' => true,
+                'message' => 'User created successfully',
+                'data' => [
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'full_name' => $user->full_name,
+                    'role' => $user->role,
+                ],
+            ], 201);
+        } catch (RuntimeException $e) {
             $this->json([
                 'success' => false,
-                'message' => 'User email already exists',
+                'message' => $e->getMessage(),
             ], 409);
-            return;
         }
-
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-        $id = $userModel->create([
-            'email'     => $email,
-            'password'  => $hashedPassword,
-            'full_name' => $fullName,
-            'role'      => $role,
-            'is_active' => 1,
-        ]);
-
-        $user = $userModel->findById($id);
-        $this->json([
-            'success' => true,
-            'message' => 'User created successfully',
-            'data' => [
-                'id'        => $user->id,
-                'email'     => $user->email,
-                'full_name' => $user->full_name,
-                'role'      => $user->role,
-            ],
-        ], 201);
     }
 }

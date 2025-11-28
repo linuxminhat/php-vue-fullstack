@@ -1,15 +1,23 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controllers;
 
 use App\Core\BaseController;
 use App\Core\Auth;
-use App\Models\Cart;
-use App\Models\CartItem;
+use App\Services\CartService;
+use RuntimeException;
 
 class CartController extends BaseController
 {
+    private CartService $cartService;
+
+    public function __construct()
+    {
+        $this->cartService = new CartService();
+    }
+
     private function authUserId(): int
     {
         if (!Auth::isLoggedIn()) {
@@ -23,12 +31,9 @@ class CartController extends BaseController
     {
         $userId = $this->authUserId();
 
-        $cartModel     = new Cart();
-        $cartItemModel = new CartItem();
-
-        $cartId = $cartModel->getOrCreateCart($userId);
-        $items  = $cartItemModel->listByCartId($cartId);
-        $total  = $cartModel->getTotal($cartId);
+        $cartId = $this->cartService->getOrCreateCart($userId);
+        $items = $this->cartService->getCartItems($cartId);
+        $total = $this->cartService->getCartTotal($cartId);
 
         \App\Core\View::render('cart.index', [
             'items' => $items,
@@ -40,17 +45,14 @@ class CartController extends BaseController
     {
         $userId = $this->authUserId();
 
-        $cartModel     = new Cart();
-        $cartItemModel = new CartItem();
-
-        $cartId = $cartModel->getOrCreateCart($userId);
-        $items  = $cartItemModel->listByCartId($cartId);
+        $cartId = $this->cartService->getOrCreateCart($userId);
+        $items = $this->cartService->getCartItems($cartId);
 
         $this->json([
             'success' => true,
-            'data'    => [
+            'data' => [
                 'cart_id' => $cartId,
-                'items'   => $items
+                'items' => $items
             ]
         ]);
     }
@@ -59,75 +61,68 @@ class CartController extends BaseController
     {
         $userId = $this->authUserId();
 
-        $data      = json_decode(file_get_contents("php://input"), true) ?? $_POST;
+        $data = json_decode(file_get_contents("php://input"), true) ?? $_POST;
         $productId = (int)($data['product_id'] ?? 0);
-        $quantity  = (int)($data
-        ['quantity'] ?? 1);
-        $price     = (float)($data['price'] ?? 0);
+        $quantity = (int)($data['quantity'] ?? 1);
+        $price = (float)($data['price'] ?? 0);
 
         if ($productId <= 0 || $quantity <= 0 || $price <= 0) {
             $this->json(['success' => false, 'message' => 'Dữ liệu không hợp lệ'], 422);
             return;
         }
-        $cartModel = new Cart();
-        $cartItemModel = new CartItem();
 
-        if (!$cartItemModel->verifyProductPrice($productId, $price)) {
+        if (!$this->cartService->verifyProductPrice($productId, $price)) {
             $this->json(['success' => false, 'message' => 'Giá sản phẩm không đúng'], 400);
             return;
         }
 
-        $cartId = $cartModel->getOrCreateCart($userId);
-        $cartItemModel->addItem($cartId, $productId, $quantity, $price);
-        $cartModel->syncTotalAmount($cartId);
+        try {
+            $this->cartService->addToCart($userId, $productId, $quantity);
 
-        $_SESSION['cart_count'] = $cartItemModel->countItems($cartId);
+            $cartId = $this->cartService->getOrCreateCart($userId);
+            $_SESSION['cart_count'] = $this->cartService->getCartItemsCount($cartId);
 
-        $this->json([
-            'success'    => true,
-            'message'    => 'Đã thêm vào giỏ hàng',
-            'cart_count' => $_SESSION['cart_count']
-        ], 201);
+            $this->json([
+                'success' => true,
+                'message' => 'Đã thêm vào giỏ hàng',
+                'cart_count' => $_SESSION['cart_count']
+            ], 201);
+        } catch (RuntimeException $e) {
+            $this->json(['success' => false, 'message' => $e->getMessage()], 400);
+        }
     }
 
     public function updateQuantity(): void
     {
         $userId = $this->authUserId();
 
-        $data       = json_decode(file_get_contents("php://input"), true) ?? $_POST;
+        $data = json_decode(file_get_contents("php://input"), true) ?? $_POST;
         $cartItemId = (int)($data['cart_item_id'] ?? 0);
-        $quantity   = (int)($data['quantity'] ?? 0);
+        $quantity = (int)($data['quantity'] ?? 0);
 
         if ($cartItemId <= 0 || $quantity < 0) {
             $this->json(['success' => false, 'message' => 'Dữ liệu không hợp lệ'], 422);
             return;
         }
 
-        $cartItemModel = new CartItem();
-        if (!$cartItemModel->isOwner($cartItemId, $userId)) {
-            $this->json(['success' => false, 'message' => 'Không có quyền'], 403);
-            return;
+        try {
+            $this->cartService->updateCartItemQuantity($cartItemId, $quantity, $userId);
+
+            $cartId = $this->cartService->getOrCreateCart($userId);
+            $_SESSION['cart_count'] = $this->cartService->getCartItemsCount($cartId);
+
+            $this->json(['success' => true, 'message' => 'Đã cập nhật']);
+        } catch (RuntimeException $e) {
+            $statusCode = $e->getMessage() === 'Unauthorized' ? 403 : 404;
+            $this->json(['success' => false, 'message' => $e->getMessage()], $statusCode);
         }
-
-        $cartId = $cartItemModel->getCartIdByItemId($cartItemId);
-        if (!$cartId) {
-            $this->json(['success' => false, 'message' => 'Item không tồn tại'], 404);
-            return;
-        }
-
-        $cartItemModel->updateQuantity($cartItemId, $quantity);
-        (new Cart())->syncTotalAmount($cartId);
-
-        $_SESSION['cart_count'] = $cartItemModel->countItems($cartId);
-
-        $this->json(['success' => true, 'message' => 'Đã cập nhật']);
     }
 
     public function removeItem(): void
     {
         $userId = $this->authUserId();
 
-        $data       = json_decode(file_get_contents("php://input"), true) ?? $_POST;
+        $data = json_decode(file_get_contents("php://input"), true) ?? $_POST;
         $cartItemId = (int)($data['cart_item_id'] ?? 0);
 
         if ($cartItemId <= 0) {
@@ -135,70 +130,27 @@ class CartController extends BaseController
             return;
         }
 
-        $cartItemModel = new CartItem();
+        try {
+            $this->cartService->removeCartItem($cartItemId, $userId);
 
-        if (!$cartItemModel->isOwner($cartItemId, $userId)) {
-            $this->json(['success' => false, 'message' => 'Không có quyền'], 403);
-            return;
+            $cartId = $this->cartService->getOrCreateCart($userId);
+            $_SESSION['cart_count'] = $this->cartService->getCartItemsCount($cartId);
+
+            $this->json(['success' => true, 'message' => 'Đã xóa sản phẩm']);
+        } catch (RuntimeException $e) {
+            $statusCode = $e->getMessage() === 'Unauthorized' ? 403 : 404;
+            $this->json(['success' => false, 'message' => $e->getMessage()], $statusCode);
         }
-
-        $cartId = $cartItemModel->getCartIdByItemId($cartItemId);
-        if (!$cartId) {
-            $this->json(['success' => false, 'message' => 'Item không tồn tại'], 404);
-            return;
-        }
-
-        $cartItemModel->removeItem($cartItemId);
-        (new Cart())->syncTotalAmount($cartId);
-
-        $_SESSION['cart_count'] = $cartItemModel->countItems($cartId);
-
-        $this->json(['success' => true, 'message' => 'Đã xóa sản phẩm']);
     }
 
     public function clearCart(): void
     {
         $userId = $this->authUserId();
 
-        $cartModel     = new Cart();
-        $cartItemModel = new CartItem();
-
-        $cartId = $cartModel->getOrCreateCart($userId);
-        $cartItemModel->clear($cartId);
-        $cartModel->syncTotalAmount($cartId);
+        $cartId = $this->cartService->getOrCreateCart($userId);
+        $this->cartService->clearCart($cartId);
         $_SESSION['cart_count'] = 0;
 
         $this->json(['success' => true, 'message' => 'Đã xóa toàn bộ giỏ hàng']);
-    }
-    
-    public function adminListCarts(): void
-    {
-        $this->requireRole(['admin', 'staff']);
-        $this->json(['success' => true, 'data' => (new Cart())->listAll()]);
-    }
-
-    public function adminCartDetail(): void
-    {
-        $this->requireRole(['admin', 'staff']);
-        $id = (int)($_GET['id'] ?? 0);
-        if ($id <= 0) {
-            $this->json(['success' => false, 'message' => 'Invalid id'], 422);
-        }
-
-        $cartModel     = new Cart();
-        $cartItemModel = new CartItem();
-        $cart          = $cartModel->findById($id);
-
-        if (!$cart) {
-            $this->json(['success' => false, 'message' => 'Not found'], 404);
-        }
-
-        $this->json([
-            'success' => true,
-            'data'    => [
-                'cart'  => $cart,
-                'items' => $cartItemModel->listByCartId($id)
-            ]
-        ]);
     }
 }

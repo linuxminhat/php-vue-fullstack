@@ -28,7 +28,7 @@
             type="email"
             name="email"
             required
-            value="<?= \App\Core\View::e($_POST['email'] ?? '') ?>"
+            value="<?= \App\Core\View::e($email ?? $_POST['email'] ?? '') ?>"
             class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             placeholder="you@example.com"
         >
