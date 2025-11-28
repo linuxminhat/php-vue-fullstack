@@ -82,8 +82,6 @@ class OrderController extends BaseController
             ], 400);
             return;
         }
-
-        // Convert cart items to order items format
         $orderItems = [];
         foreach ($cartItems as $item) {
             $orderItems[] = [
@@ -94,8 +92,6 @@ class OrderController extends BaseController
 
         try {
             $orderId = $this->orderService->createOrder($userId, $orderItems, $phone, $address);
-
-            // Clear cart after successful order
             $this->cartService->clearCart($cartId);
             $_SESSION['cart_count'] = 0;
 
@@ -196,9 +192,6 @@ class OrderController extends BaseController
         ], 'main');
     }
 
-    /**
-     * Show order detail page for customer (HTML view)
-     */
     public function showOrderDetail($id): void
     {
         if (!Auth::isLoggedIn()) {
@@ -210,7 +203,6 @@ class OrderController extends BaseController
         $userId = (int)Auth::id();
 
         try {
-            // Get order and verify ownership
             $order = $this->orderService->getCustomerOrder($orderId, $userId);
             
             if (!$order) {
@@ -218,8 +210,6 @@ class OrderController extends BaseController
                 echo "Đơn hàng không tồn tại hoặc không thuộc về bạn.";
                 return;
             }
-
-            // Get order items
             $items = $this->orderService->getOrderItems($orderId);
 
             \App\Core\View::render('orders.order-detail', [

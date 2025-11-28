@@ -23,7 +23,6 @@
     <?= $content ?>
 
     <script>
-    // Check if Turbo is loaded
     if (typeof Turbo !== 'undefined') {
         console.log('✅ Turbo is active!');
         console.log('🚀 SPA mode: Links will not reload the page');
@@ -31,7 +30,6 @@
         console.error('❌ Turbo failed to load');
     }
     
-    // Re-initialize scripts after Turbo navigation
     document.addEventListener('turbo:load', function() {
         console.log('🔄 Turbo navigated - Page changed without reload!');
     });
@@ -40,7 +38,6 @@
         console.log('⏩ Navigating to:', event.detail.url);
     });
     
-    // Global cart functions
     function addToCart(productId, quantity = null) {
         const qtyInput = document.getElementById('qty');
         const qty = quantity || (qtyInput ? parseInt(qtyInput.value) : 1) || 1;

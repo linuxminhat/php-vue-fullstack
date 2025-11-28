@@ -3,13 +3,6 @@
 declare(strict_types=1);
 
 namespace App\Models;
-
-/**
- * Order Entity
- * 
- * Represents an order in the system.
- * This is a plain data object (entity) without any database logic.
- */
 class Order
 {
     public int $id;
@@ -21,7 +14,5 @@ class Order
     public float $total_amount;
     public string $created_at;
     public ?string $updated_at;
-
-    // For admin display
     public ?string $customer_name = null;
 }

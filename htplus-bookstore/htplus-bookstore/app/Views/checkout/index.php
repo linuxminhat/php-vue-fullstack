@@ -6,7 +6,7 @@
         <!-- Header -->
         <div class="bg-white shadow-sm rounded-lg p-4 mb-6">
             <h1 class="text-2xl font-bold text-orange-600">
-                <span class="mr-2">📦</span> Checkout
+                <span class="mr-2">📦</span> Thanh toán
             </h1>
         </div>
 

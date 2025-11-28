@@ -4,35 +4,35 @@
 
 <button id="openCreateModal"
     class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-    + New Product
+    + Thêm sản phẩm mới
 </button>
 
 <!-- Create Modal -->
 <div id="createModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 overflow-y-auto">
     <div class="bg-white w-full max-w-2xl rounded-lg shadow-lg p-6 m-4">
-        <h2 class="text-xl font-bold mb-4">Create Product</h2>
+        <h2 class="text-xl font-bold mb-4">Tạo sản phẩm mới</h2>
 
         <form id="createForm" onsubmit="submitCreateForm(event)">
             <div class="grid grid-cols-2 gap-4">
                 <!-- Name -->
                 <div class="col-span-2">
-                    <label class="block mb-2 font-semibold">Product Name <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Tên sản phẩm <span class="text-red-500">*</span></label>
                     <input type="text" name="name" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- SKU -->
                 <div>
-                    <label class="block mb-2 font-semibold">SKU <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Mã SKU <span class="text-red-500">*</span></label>
                     <input type="text" name="sku" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Category -->
                 <div>
-                    <label class="block mb-2 font-semibold">Category</label>
+                    <label class="block mb-2 font-semibold">Danh mục</label>
                     <select name="category_id" class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Select Category --</option>
+                        <option value="">-- Chọn danh mục --</option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?= $cat->id ?>"><?= htmlspecialchars($cat->name) ?></option>
                         <?php endforeach; ?>
@@ -41,14 +41,14 @@
 
                 <!-- Author -->
                 <div>
-                    <label class="block mb-2 font-semibold">Author <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Tác giả <span class="text-red-500">*</span></label>
                     <input type="text" name="author" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Publisher -->
                 <div>
-                    <label class="block mb-2 font-semibold">Publisher <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Nhà xuất bản <span class="text-red-500">*</span></label>
                     <input type="text" name="publisher" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
@@ -62,28 +62,28 @@
 
                 <!-- Price -->
                 <div>
-                    <label class="block mb-2 font-semibold">Price <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Giá <span class="text-red-500">*</span></label>
                     <input type="number" name="price" step="0.01" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Stock -->
                 <div>
-                    <label class="block mb-2 font-semibold">Stock <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Số lượng <span class="text-red-500">*</span></label>
                     <input type="number" name="stock" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Image -->
                 <div class="col-span-2">
-                    <label class="block mb-2 font-semibold">Cover Image</label>
+                    <label class="block mb-2 font-semibold">Ảnh bìa</label>
                     <input type="file" name="cover_image" accept="image/*"
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Description -->
                 <div class="col-span-2">
-                    <label class="block mb-2 font-semibold">Description <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Mô tả <span class="text-red-500">*</span></label>
                     <textarea name="description" rows="4" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500"></textarea>
                 </div>
@@ -91,9 +91,9 @@
 
             <div class="flex justify-end space-x-2 mt-4">
                 <button type="button" id="closeCreateModal"
-                        class="px-4 py-2 bg-gray-400 rounded text-white hover:bg-gray-500">Cancel</button>
+                        class="px-4 py-2 bg-gray-400 rounded text-white hover:bg-gray-500">Hủy</button>
                 <button type="submit" id="createBtn"
-                        class="px-4 py-2 bg-blue-600 rounded text-white hover:bg-blue-700">Create</button>
+                        class="px-4 py-2 bg-blue-600 rounded text-white hover:bg-blue-700">Tạo mới</button>
             </div>
         </form>
     </div>
@@ -106,13 +106,13 @@
             <thead class="bg-gray-100 border-b">
             <tr class="text-left">
                 <th class="py-3 px-4">ID</th>
-                <th class="py-3 px-4">Image</th>
-                <th class="py-3 px-4">Name</th>
-                <th class="py-3 px-4">Author</th>
-                <th class="py-3 px-4">SKU</th>
-                <th class="py-3 px-4">Price</th>
-                <th class="py-3 px-4">Stock</th>
-                <th class="py-3 px-4">Action</th>
+                <th class="py-3 px-4">Hình ảnh</th>
+                <th class="py-3 px-4">Tên sản phẩm</th>
+                <th class="py-3 px-4">Tác giả</th>
+                <th class="py-3 px-4">Mã SKU</th>
+                <th class="py-3 px-4">Giá</th>
+                <th class="py-3 px-4">Tồn kho</th>
+                <th class="py-3 px-4">Hành động</th>
             </tr>
             </thead>
 
@@ -128,7 +128,7 @@
                                  class="w-12 h-16 object-cover rounded">
                         <?php else: ?>
                             <div class="w-12 h-16 bg-gray-200 rounded flex items-center justify-center">
-                                <span class="text-xs text-gray-500">No image</span>
+                                <span class="text-xs text-gray-500">Không có ảnh</span>
                             </div>
                         <?php endif; ?>
                     </td>
@@ -163,12 +163,12 @@
                             data-stock="<?= $p->stock ?>"
                             data-description="<?= htmlspecialchars($p->description ?? '') ?>"
                             data-image="<?= htmlspecialchars($p->image ?? '') ?>">
-                            Edit
+                            Sửa
                         </button>
                         <button 
                             onclick="deleteProduct(<?= $p->id ?>)"
                             class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-                            Delete
+                            Xóa
                         </button>
                     </td>
                 </tr>
@@ -182,7 +182,7 @@
 <div class="mt-4 flex justify-center space-x-2">
     <?php if ($page > 1): ?>
         <a href="/admin/products?page=<?= $page - 1 ?>" 
-        class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Previous</a>
+        class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Trước</a>
     <?php endif; ?>
 
     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
@@ -195,37 +195,37 @@
 
     <?php if ($page < $totalPages): ?>
         <a href="/admin/products?page=<?= $page + 1 ?>" 
-        class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Next</a>
+        class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Tiếp</a>
     <?php endif; ?>
 </div>
 
 <!-- Edit Modal -->
 <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 overflow-y-auto">
     <div class="bg-white w-full max-w-2xl rounded-lg shadow-lg p-6 m-4">
-        <h2 class="text-xl font-bold mb-4">Edit Product</h2>
+        <h2 class="text-xl font-bold mb-4">Chỉnh sửa sản phẩm</h2>
         <form id="editForm" onsubmit="submitEditForm(event)">
             <input type="hidden" name="id" id="edit_id">
 
             <div class="grid grid-cols-2 gap-4">
                 <!-- Name -->
                 <div class="col-span-2">
-                    <label class="block mb-2 font-semibold">Product Name <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Tên sản phẩm <span class="text-red-500">*</span></label>
                     <input type="text" name="name" id="edit_name" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- SKU -->
                 <div>
-                    <label class="block mb-2 font-semibold">SKU <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Mã SKU <span class="text-red-500">*</span></label>
                     <input type="text" name="sku" id="edit_sku" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Category -->
                 <div>
-                    <label class="block mb-2 font-semibold">Category</label>
+                    <label class="block mb-2 font-semibold">Danh mục</label>
                     <select name="category_id" id="edit_category" class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Select Category --</option>
+                        <option value="">-- Chọn danh mục --</option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?= $cat->id ?>"><?= htmlspecialchars($cat->name) ?></option>
                         <?php endforeach; ?>
@@ -234,14 +234,14 @@
 
                 <!-- Author -->
                 <div>
-                    <label class="block mb-2 font-semibold">Author <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Tác giả <span class="text-red-500">*</span></label>
                     <input type="text" name="author" id="edit_author" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Publisher -->
                 <div>
-                    <label class="block mb-2 font-semibold">Publisher <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Nhà xuất bản <span class="text-red-500">*</span></label>
                     <input type="text" name="publisher" id="edit_publisher" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
@@ -255,35 +255,35 @@
 
                 <!-- Price -->
                 <div>
-                    <label class="block mb-2 font-semibold">Price <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Giá <span class="text-red-500">*</span></label>
                     <input type="number" name="price" id="edit_price" step="0.01" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Stock -->
                 <div>
-                    <label class="block mb-2 font-semibold">Stock <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Tồn kho <span class="text-red-500">*</span></label>
                     <input type="number" name="stock" id="edit_stock" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Current Image -->
                 <div class="col-span-2">
-                    <label class="block mb-2 font-semibold">Current Image</label>
+                    <label class="block mb-2 font-semibold">Ảnh hiện tại</label>
                     <div id="current_image_preview"></div>
                     <input type="hidden" name="current_image" id="edit_current_image">
                 </div>
 
                 <!-- New Image -->
                 <div class="col-span-2">
-                    <label class="block mb-2 font-semibold">Change Image (optional)</label>
+                    <label class="block mb-2 font-semibold">Thay đổi ảnh (tùy chọn)</label>
                     <input type="file" name="cover_image" accept="image/*"
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Description -->
                 <div class="col-span-2">
-                    <label class="block mb-2 font-semibold">Description <span class="text-red-500">*</span></label>
+                    <label class="block mb-2 font-semibold">Mô tả <span class="text-red-500">*</span></label>
                     <textarea name="description" id="edit_description" rows="4" required
                         class="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500"></textarea>
                 </div>
@@ -292,11 +292,11 @@
             <div class="flex justify-end space-x-2 mt-4">
                 <button type="button" id="closeEditModal" 
                         class="px-4 py-2 bg-gray-400 rounded text-white hover:bg-gray-500">
-                    Cancel
+                    Hủy
                 </button>
                 <button type="submit" id="updateBtn"
                         class="px-4 py-2 bg-blue-600 rounded text-white hover:bg-blue-700">
-                    Update
+                    Cập nhật
                 </button>
             </div>
         </form>

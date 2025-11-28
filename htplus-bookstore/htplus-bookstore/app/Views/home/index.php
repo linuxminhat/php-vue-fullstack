@@ -10,7 +10,7 @@
     <div class="relative max-w-6xl mx-auto h-full flex items-end px-4 pb-16">
         <div class="text-white max-w-xl">
             <p class="tracking-[0.25em] text-xs uppercase mb-2">
-                Read more, often
+                Đọc nhiều, sống tốt
             </p>
             <h1 class="text-4xl md:text-5xl font-semibold mb-4">
                 HTPLUS Book Store 
@@ -18,11 +18,11 @@
             <div class="flex flex-wrap gap-4 text-xs font-semibold">
                 <a href="#whats-good"
                    class="inline-block border border-white px-4 py-2 hover:bg-white hover:text-black transition">
-                    VISIT OUR STORE
+                    KHÁM PHÁ CỬA HÀNG
                 </a>
                 <a href="#submit-review"
                    class="inline-block border border-white px-4 py-2 hover:bg-white hover:text-black transition">
-                    SUBMIT A BOOK REVIEW
+                    ĐÁNH GIÁ SÁCH
                 </a>
             </div>
         </div>
@@ -31,7 +31,7 @@
 <section id="whats-good" class="py-16 bg-white">
     <div class="max-w-6xl mx-auto px-4">
         <h2 class="text-3xl font-semibold text-center mb-10">
-            Choose your favourite book 
+            Chọn cuốn sách yêu thích của bạn
         </h2>
         <?php if (empty($products)): ?>
             <p class="text-center text-gray-500">Chưa có sách nào.</p>
@@ -46,7 +46,7 @@
 
                     <div class="relative">
                         <div class="absolute -top-3 left-0 bg-green-400 text-white text-[11px] font-semibold px-3 py-1 rounded-sm tracking-wide">
-                            HARDCOVER
+                            BÌA CỨNG
                         </div>
                         <button
                             class="absolute top-2 right-2 w-8 h-8 rounded-full border border-green-300 bg-white flex items-center justify-center text-green-500 text-lg">
@@ -59,7 +59,7 @@
                         alt="<?= View::e($product->name) ?>"
                         class="w-full h-full object-cover">
                         <?php else: ?>
-                        <span class="text-xs text-gray-400">No image</span>
+                        <span class="text-xs text-gray-400">Chưa có ảnh</span>
                         <?php endif; ?>
                         </div>
                         </a>
@@ -76,7 +76,7 @@
                         <?php $author = property_exists($product, 'author') ? $product->author : null; ?>
                         <?php if ($author): ?>
                             <p class="text-xs text-gray-500 mb-1">
-                                By <?= View::e($author) ?>
+                                Tác giả: <?= View::e($author) ?>
                             </p>
                         <?php endif; ?>
 
@@ -90,7 +90,7 @@
                         data-product-price="<?= $product->price ?>"
                         class="w-full bg-green-400 hover:bg-green-500 text-white text-xs font-semibold py-2 flex items-center justify-center gap-2 rounded">
                         <span>🛒</span>
-                        <span>Add To Cart</span>
+                        <span>Thêm vào giỏ</span>
                         </button>
                     </div>
                 </div>
@@ -224,8 +224,8 @@
 
 <section id="submit-review" class="py-16 bg-[#f6faf9]">
     <div class="max-w-3xl mx-auto px-4 text-center text-sm text-gray-600">
-        <h3 class="text-xl font-semibold mb-4">Submit a book review</h3>
-        <p>Phần này sau bạn có thể làm form review sách.</p>
+        <h3 class="text-xl font-semibold mb-4">Đánh giá sách</h3>
+        <p>Phần này sau bạn có thể làm form đánh giá sách.</p>
     </div>
 </section>
 

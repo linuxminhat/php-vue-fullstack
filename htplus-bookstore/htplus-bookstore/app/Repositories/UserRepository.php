@@ -8,16 +8,9 @@ use App\Core\BaseRepository;
 use App\Models\User;
 use PDO;
 
-/**
- * User Repository
- * 
- * Handles all database operations for users.
- */
 class UserRepository extends BaseRepository
 {
-    /**
-     * Map database row to User entity
-     */
+
     private function mapRow(array $row): User
     {
         $user = new User();
@@ -31,9 +24,6 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
-    /**
-     * Get all users
-     */
     public function findAll(): array
     {
         $stmt = $this->db->prepare("SELECT * FROM users ORDER BY id ASC");
@@ -42,9 +32,6 @@ class UserRepository extends BaseRepository
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
-    /**
-     * Find user by email
-     */
     public function findByEmail(string $email): ?User
     {
         $stmt = $this->db->prepare('SELECT * FROM users WHERE email=:email LIMIT 1');
@@ -53,9 +40,6 @@ class UserRepository extends BaseRepository
         return $row ? $this->mapRow($row) : null;
     }
 
-    /**
-     * Find user by ID
-     */
     public function findById(int $id): ?User
     {
         $stmt = $this->db->prepare('SELECT * FROM users WHERE id=:id LIMIT 1');
@@ -63,10 +47,6 @@ class UserRepository extends BaseRepository
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ? $this->mapRow($row) : null;
     }
-
-    /**
-     * Create new user
-     */
     public function create(array $data): int
     {
         $stmt = $this->db->prepare(
@@ -84,9 +64,6 @@ class UserRepository extends BaseRepository
         return (int) $this->db->lastInsertId();
     }
 
-    /**
-     * Update user
-     */
     public function update(int $id, array $data): int
     {
         $stmt = $this->db->prepare(
@@ -109,9 +86,6 @@ class UserRepository extends BaseRepository
         return $stmt->rowCount();
     }
 
-    /**
-     * Update user profile (name only)
-     */
     public function updateProfile(int $id, string $full_name): int
     {
         $stmt = $this->db->prepare(
@@ -124,9 +98,6 @@ class UserRepository extends BaseRepository
         return $stmt->rowCount();
     }
 
-    /**
-     * Change user password
-     */
     public function changePassword(int $id, string $password): int
     {
         $stmt = $this->db->prepare(
@@ -139,9 +110,6 @@ class UserRepository extends BaseRepository
         return $stmt->rowCount();
     }
 
-    /**
-     * Get paginated users
-     */
     public function getPaginated(int $limit, int $offset): array
     {
         $sql = "SELECT * FROM users ORDER BY id ASC LIMIT :limit OFFSET :offset";
@@ -152,9 +120,6 @@ class UserRepository extends BaseRepository
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
-    /**
-     * Count total users
-     */
     public function countAll(): int
     {
         $stmt = $this->db->query("SELECT COUNT(*) as total FROM users");

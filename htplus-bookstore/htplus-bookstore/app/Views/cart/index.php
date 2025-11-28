@@ -2,11 +2,11 @@
 
 <div class="max-w-6xl mx-auto px-4 py-12">
 
-    <h1 class="text-3xl font-bold mb-6">Your Cart</h1>
+    <h1 class="text-3xl font-bold mb-6">Giỏ hàng của bạn</h1>
 
     <?php if (empty($items)): ?>
-        <p class="text-gray-600">Your cart is empty.</p>
-        <a href="/products" class="text-green-600 underline">Continue shopping</a>
+        <p class="text-gray-600">Giỏ hàng trống.</p>
+        <a href="/products" class="text-green-600 underline">Tiếp tục mua sắm</a>
     <?php else: ?>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -38,7 +38,7 @@
                             <!-- Remove -->
                             <button onclick="removeItem(<?= $item['cart_item_id'] ?>)"
                                     class="ml-4 text-red-600 hover:underline">
-                                Remove
+                                Xóa
                             </button>
                         </div>
                     </div>
@@ -49,10 +49,10 @@
 
             <!-- TOTAL -->
             <div class="bg-white shadow rounded p-6 h-fit sticky top-6">
-                <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                <h2 class="text-xl font-semibold mb-4">Tóm tắt đơn hàng</h2>
 
                 <p class="flex justify-between text-lg mb-4">
-                    <span>Total:</span>
+                    <span>Tổng cộng:</span>
                     <span class="font-bold text-green-600">
                         <?= View::currency($total) ?>
                     </span>
@@ -60,7 +60,7 @@
 
                 <a href="/checkout"
                    class="block bg-blue-600 text-white text-center py-3 rounded hover:bg-blue-700">
-                    Proceed to Checkout
+                    Thanh toán
                 </a>
             </div>
 

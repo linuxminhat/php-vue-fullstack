@@ -35,27 +35,27 @@ if (!isset($categories)) {
             >
             <div class="leading-tight">
                 <div class="text-lg font-semibold tracking-wide">HTPLUS Book Store</div>
-                <div class="text-xs text-gray-500">in Da Nang</div>
+                <div class="text-xs text-gray-500">tại Đà Nẵng</div>
             </div>
         </div>
 
         <!-- Menu -->
         <nav class="hidden md:flex items-center space-x-8 text-sm">
 
-            <a href="/about" class="<?= nav_active('/about') ?>">About Us</a>
-            <a href="/#our-locations" class="hover:text-green-600">Our Locations</a>
+            <a href="/about" class="<?= nav_active('/about') ?>">Về chúng tôi</a>
+            <a href="/#our-locations" class="hover:text-green-600">Văn phòng</a>
 
             <!-- All Books -->
-            <a href="/products" class="<?= nav_active('/products') ?>">All Books</a>
+            <a href="/products" class="<?= nav_active('/products') ?>">Tất cả sách</a>
 
             <?php if (Auth::isLoggedIn()): ?>
-                <a href="/account" class="<?= nav_active('/account') ?>">My Account</a>
+                <a href="/account" class="<?= nav_active('/account') ?>">Tài khoản của tôi</a>
             <?php else: ?>
-                <a href="/auth/login" class="<?= nav_active('/auth/login') ?>">My Account</a>
+                <a href="/auth/login" class="<?= nav_active('/auth/login') ?>">Tài khoản của tôi</a>
             <?php endif; ?>
 
             <?php if (Auth::isAdmin()): ?>
-                <a href="/admin" class="px-4 py-2 hover:text-blue-600">Admin Page</a>
+                <a href="/admin" class="px-4 py-2 hover:text-blue-600">Trang quản trị</a>
             <?php endif; ?>
 
         </nav>

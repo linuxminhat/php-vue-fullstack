@@ -85,8 +85,6 @@ class ProductController extends BaseController
             ], 422);
             return;
         }
-
-        //Upload image
         $imageUrl = null;
         if (!$isJson && isset($_FILES['cover_image'])) {
             try {
@@ -283,8 +281,6 @@ class ProductController extends BaseController
             echo "Product Not Found";
             return;
         }
-
-        // Get related products from the same category
         $relatedProducts = [];
         if ($product->category_id) {
             $relatedProducts = $this->productService->getRelatedProducts(

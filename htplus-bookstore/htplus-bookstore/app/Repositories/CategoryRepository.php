@@ -8,16 +8,8 @@ use App\Core\BaseRepository;
 use App\Models\Category;
 use PDO;
 
-/**
- * Category Repository
- * 
- * Handles all database operations for categories.
- */
 class CategoryRepository extends BaseRepository
 {
-    /**
-     * Map database row to Category entity
-     */
     private function mapRow(array $row): Category
     {
         $category = new Category();
@@ -27,9 +19,6 @@ class CategoryRepository extends BaseRepository
         return $category;
     }
 
-    /**
-     * Get all categories
-     */
     public function findAll(): array
     {
         $stmt = $this->db->prepare("SELECT * FROM categories ORDER BY id ASC");
@@ -38,9 +27,6 @@ class CategoryRepository extends BaseRepository
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
-    /**
-     * Find category by ID
-     */
     public function findById(int $id): ?Category
     {
         $stmt = $this->db->prepare('SELECT * FROM categories WHERE id=:id LIMIT 1');
@@ -49,9 +35,6 @@ class CategoryRepository extends BaseRepository
         return $row ? $this->mapRow($row) : null;
     }
 
-    /**
-     * Find category by name
-     */
     public function findByName(string $name): ?Category
     {
         $stmt = $this->db->prepare('SELECT * FROM categories WHERE name=:name LIMIT 1');
@@ -60,9 +43,6 @@ class CategoryRepository extends BaseRepository
         return $row ? $this->mapRow($row) : null;
     }
 
-    /**
-     * Create new category
-     */
     public function create(string $name): int
     {
         $stmt = $this->db->prepare('INSERT INTO categories (name) VALUES (:name)');
@@ -70,9 +50,6 @@ class CategoryRepository extends BaseRepository
         return (int) $this->db->lastInsertId();
     }
 
-    /**
-     * Update category
-     */
     public function update(int $id, string $name): int
     {
         $stmt = $this->db->prepare('UPDATE categories SET name = :name WHERE id = :id');
@@ -83,9 +60,6 @@ class CategoryRepository extends BaseRepository
         return $stmt->rowCount();
     }
 
-    /**
-     * Delete category
-     */
     public function delete(int $id): int
     {
         $stmt = $this->db->prepare('DELETE FROM categories WHERE id=:id');

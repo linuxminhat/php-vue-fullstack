@@ -8,11 +8,6 @@ use App\Repositories\UserRepository;
 use App\Models\User;
 use RuntimeException;
 
-/**
- * User Service
- * 
- * Handles business logic for users.
- */
 class UserService
 {
     private UserRepository $repository;
@@ -21,34 +16,18 @@ class UserService
     {
         $this->repository = new UserRepository();
     }
-
-    /**
-     * Get all users
-     */
     public function getAllUsers(): array
     {
         return $this->repository->findAll();
     }
-
-    /**
-     * Get user by ID
-     */
     public function getUserById(int $id): ?User
     {
         return $this->repository->findById($id);
     }
-
-    /**
-     * Get user by email
-     */
     public function getUserByEmail(string $email): ?User
     {
         return $this->repository->findByEmail($email);
     }
-
-    /**
-     * Create new user
-     */
     public function createUser(array $data): int
     {
         // Validate email
@@ -72,10 +51,6 @@ class UserService
 
         return $this->repository->create($data);
     }
-
-    /**
-     * Update user
-     */
     public function updateUser(int $id, array $data): bool
     {
         $user = $this->repository->findById($id);
@@ -99,10 +74,6 @@ class UserService
         $rowsAffected = $this->repository->update($id, $data);
         return $rowsAffected > 0;
     }
-
-    /**
-     * Update user profile
-     */
     public function updateProfile(int $id, string $fullName): bool
     {
         if (empty(trim($fullName))) {
@@ -112,10 +83,6 @@ class UserService
         $rowsAffected = $this->repository->updateProfile($id, $fullName);
         return $rowsAffected > 0;
     }
-
-    /**
-     * Change user password
-     */
     public function changePassword(int $id, string $currentPassword, string $newPassword): bool
     {
         $user = $this->repository->findById($id);
@@ -137,10 +104,6 @@ class UserService
         $rowsAffected = $this->repository->changePassword($id, $hashedPassword);
         return $rowsAffected > 0;
     }
-
-    /**
-     * Authenticate user
-     */
     public function authenticate(string $email, string $password): ?User
     {
         $user = $this->repository->findByEmail($email);
@@ -159,10 +122,6 @@ class UserService
 
         return $user;
     }
-
-    /**
-     * Get paginated users
-     */
     public function getPaginatedUsers(int $page, int $perPage): array
     {
         $offset = ($page - 1) * $perPage;

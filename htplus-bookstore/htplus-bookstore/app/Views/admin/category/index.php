@@ -5,25 +5,25 @@
 <!-- Nút mở modal tạo mới -->
 <button id="openCreateModal"
         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-    + New Category
+    + Thêm danh mục mới
 </button>
 
 <!-- Modal Create -->
 <div id="createModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white w-1/3 rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold mb-4">Create Category</h2>
+        <h2 class="text-xl font-bold mb-4">Tạo danh mục mới</h2>
 
         <form id="createForm">
-            <label class="block mb-2">Category Name</label>
+            <label class="block mb-2">Tên danh mục</label>
             <input type="text" name="name" required
                    class="w-full border px-3 py-2 rounded mb-3">
 
             <div class="flex justify-end space-x-2">
                 <button type="button" id="closeCreateModal"
-                        class="px-4 py-2 bg-gray-400 rounded text-white">Cancel</button>
+                        class="px-4 py-2 bg-gray-400 rounded text-white">Hủy</button>
 
                 <button type="submit"
-                        class="px-4 py-2 bg-blue-600 rounded text-white">Create</button>
+                        class="px-4 py-2 bg-blue-600 rounded text-white">Tạo mới</button>
             </div>
         </form>
     </div>
@@ -36,9 +36,9 @@
         <thead class="bg-gray-100 border-b">
         <tr class="text-left">
             <th class="py-3 px-4">ID</th>
-            <th class="py-3 px-4">Category Name</th>
-            <th class="py-3 px-4">Created At</th>
-            <th class="py-3 px-4">Action</th>
+            <th class="py-3 px-4">Tên danh mục</th>
+            <th class="py-3 px-4">Ngày tạo</th>
+            <th class="py-3 px-4">Hành động</th>
         </tr>
         </thead>
 
@@ -60,14 +60,14 @@
                         class="px-3 py-1 bg-green-500 text-white rounded openEditModal"
                         data-id="<?= $c->id ?>"
                         data-name="<?= htmlspecialchars($c->name) ?>">
-                        Edit
+                        Sửa
                     </button>
 
                     <!-- Delete -->
                     <button 
                         class="px-3 py-1 bg-red-500 text-white rounded deleteBtn"
                         data-id="<?= $c->id ?>">
-                        Delete
+                        Xóa
                     </button>
                 </td>
 
@@ -82,7 +82,7 @@
 <div class="mt-4 flex justify-center space-x-2">
     <?php if ($page > 1): ?>
         <a href="/admin/categories?page=<?= $page - 1 ?>"
-           class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Previous</a>
+           class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Trước</a>
     <?php endif; ?>
 
     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
@@ -95,29 +95,29 @@
 
     <?php if ($page < $totalPages): ?>
         <a href="/admin/categories?page=<?= $page + 1 ?>"
-           class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Next</a>
+           class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">Tiếp</a>
     <?php endif; ?>
 </div>
 
 <!-- Modal Edit -->
 <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white w-1/3 rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold mb-4">Edit Category</h2>
+        <h2 class="text-xl font-bold mb-4">Chỉnh sửa danh mục</h2>
 
         <form id="editForm">
 
             <input type="hidden" name="id" id="edit_id">
 
-            <label class="block mb-2">Category Name</label>
+            <label class="block mb-2">Tên danh mục</label>
             <input type="text" name="name" id="edit_name" required
                    class="w-full border px-3 py-2 rounded mb-3">
 
             <div class="flex justify-end space-x-2">
                 <button type="button" id="closeModal"
-                        class="px-4 py-2 bg-gray-400 rounded text-white">Cancel</button>
+                        class="px-4 py-2 bg-gray-400 rounded text-white">Hủy</button>
 
                 <button type="submit"
-                        class="px-4 py-2 bg-blue-600 rounded text-white">Update</button>
+                        class="px-4 py-2 bg-blue-600 rounded text-white">Cập nhật</button>
             </div>
 
         </form>

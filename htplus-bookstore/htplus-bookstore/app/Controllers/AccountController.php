@@ -28,8 +28,6 @@ class AccountController extends BaseController
             exit();
         }
         $user = Auth::user();
-
-        // Get user's orders
         $orders = $this->orderService->getCustomerOrders($user->id);
 
         \App\Core\View::render('account/index', [

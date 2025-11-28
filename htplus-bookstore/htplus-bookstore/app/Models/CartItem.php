@@ -3,13 +3,6 @@
 declare(strict_types=1);
 
 namespace App\Models;
-
-/**
- * CartItem Entity
- * 
- * Represents an item in a shopping cart.
- * This is a plain data object (entity) without any database logic.
- */
 class CartItem
 {
     public int $id;

@@ -7,17 +7,8 @@ namespace App\Repositories;
 use App\Core\BaseRepository;
 use App\Models\OrderItem;
 use PDO;
-
-/**
- * OrderItem Repository
- * 
- * Handles all database operations for order items.
- */
 class OrderItemRepository extends BaseRepository
 {
-    /**
-     * Map database row to OrderItem entity
-     */
     private function mapRow(array $row): OrderItem
     {
         $i = new OrderItem();
@@ -30,10 +21,6 @@ class OrderItemRepository extends BaseRepository
         $i->created_at = $row['created_at'];
         return $i;
     }
-
-    /**
-     * Find order items by order ID
-     */
     public function findByOrderId(int $orderId): array
     {
         $stmt = $this->db->prepare(

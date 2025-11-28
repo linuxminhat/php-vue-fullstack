@@ -1,14 +1,14 @@
 <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-semibold text-gray-800">Login</h1>
+    <h1 class="text-3xl font-semibold text-gray-800">Đăng nhập</h1>
 
     <div class="flex bg-gray-100 rounded-full p-1 space-x-1 text-sm">
         <a href="/auth/register"
            class="px-4 py-1 rounded-full hover:bg-white">
-            Sign Up
+            Đăng ký
         </a>
         <a href="/auth/login"
            class="px-4 py-1 rounded-full bg-white text-green-600 font-semibold">
-            Login
+            Đăng nhập
         </a>
     </div>
 </div>
@@ -22,7 +22,7 @@
 <form method="post" action="/auth/login" class="space-y-4">
     <div>
         <label class="block text-sm font-medium mb-1">
-            Email address <span class="text-red-500">*</span>
+            Địa chỉ Email <span class="text-red-500">*</span>
         </label>
         <input
             type="email"
@@ -36,7 +36,7 @@
 
     <div>
         <label class="block text-sm font-medium mb-1">
-            Password <span class="text-red-500">*</span>
+            Mật khẩu <span class="text-red-500">*</span>
         </label>
         <input
             type="password"
@@ -50,14 +50,14 @@
     <div class="flex items-center justify-between text-xs text-gray-500">
         <label class="flex items-center gap-2">
             <input type="checkbox" name="remember" class="rounded border-gray-300">
-            <span>Remember me</span>
+            <span>Ghi nhớ đăng nhập</span>
         </label>
-        <a href="#" class="hover:text-green-600">Forgot password?</a>
+        <a href="#" class="hover:text-green-600">Quên mật khẩu?</a>
     </div>
 
     <button
         type="submit"
         class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-md text-sm">
-        Login
+        Đăng nhập
     </button>
 </form>

@@ -4,12 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-/**
- * Cart Entity
- * 
- * Represents a shopping cart in the system.
- * This is a plain data object (entity) without any database logic.
- */
 class Cart
 {
     public int $id;

@@ -44,7 +44,6 @@ class AdminController
         ]);
     }
 
-    // === PRODUCTS MANAGEMENT ===
     public function products()
     {
         if (!Auth::isAdmin()) {
@@ -59,8 +58,6 @@ class AdminController
         $products = $this->productService->getAllProducts();
         $totalProducts = count($products);
         $totalPages = ceil($totalProducts / $limit);
-        
-        // Paginate manually (since we're getting all products)
         $paginatedProducts = array_slice($products, $offset, $limit);
         $categories = $this->categoryService->getAllCategories();
 
@@ -73,7 +70,6 @@ class AdminController
         ]);
     }
 
-    // === ORDERS MANAGEMENT ===
     public function orders()
     {
         if (!Auth::isAdmin()) {
@@ -84,16 +80,11 @@ class AdminController
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $limit = 15;
         $offset = ($page - 1) * $limit;
-
-        // Get all orders
         $allOrders = $this->orderService->getAllOrders();
         $totalOrders = count($allOrders);
         $totalPages = ceil($totalOrders / $limit);
 
-        // Paginate
         $orders = array_slice($allOrders, $offset, $limit);
-
-        // Attach customer names to orders
         foreach ($orders as $order) {
             $user = $this->userService->getUserById($order->customer_id);
             $order->customer_name = $user ? $user->full_name : 'Unknown';
@@ -215,16 +206,12 @@ class AdminController
             header("Location: /admin/users");
             exit;
         }
-
-        // Prevent deleting yourself
         if ($id === (int)Auth::id()) {
             header("Location: /admin/users?error=" . urlencode("Cannot delete your own account"));
             exit;
         }
 
         try {
-            // Note: Bạn cần thêm method deleteUser() vào UserService
-            // $this->userService->deleteUser($id);
             header("Location: /admin/users?success=" . urlencode("User deleted successfully"));
         } catch (\Exception $e) {
             header("Location: /admin/users?error=" . urlencode($e->getMessage()));

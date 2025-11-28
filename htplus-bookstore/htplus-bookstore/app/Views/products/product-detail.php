@@ -14,7 +14,7 @@
         <h1 class="text-3xl font-semibold mb-2"><?= View::e($product->name) ?></h1>
 
         <?php if ($product->author): ?>
-        <p class="text-gray-600 mb-4">by <?= View::e($product->author) ?></p>
+        <p class="text-gray-600 mb-4">Tác giả: <?= View::e($product->author) ?></p>
         <?php endif; ?>
 
         <p class="font-medium text-2xl text-green-600 mb-4">
@@ -22,7 +22,7 @@
         </p>
 
         <p class="text-gray-700 leading-relaxed mb-6">
-            <?= nl2br(View::e($product->description ?? "No description available.")) ?>
+            <?= nl2br(View::e($product->description ?? "Chưa có mô tả.")) ?>
         </p>
 
  
@@ -40,13 +40,13 @@
                     data-product-id="<?= $product->id ?>"
                     data-product-price="<?= $product->price ?>"
                     class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded shadow">
-                ✔ Add To Cart
+                ✔ Thêm vào giỏ
             </button>
 
  
             <button onclick="orderNow()"
                     class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded shadow">
-                ⚡ Order
+                ⚡ Mua ngay
             </button>
 
         </div>
@@ -57,7 +57,7 @@
 <?php if (!empty($related_products)): ?>
 <section class="bg-gray-50 py-16">
     <div class="max-w-6xl mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-8">You might also like</h2>
+        <h2 class="text-3xl font-bold mb-8">Có thể bạn cũng thích</h2>
         
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <?php foreach ($related_products as $relatedProduct): ?>

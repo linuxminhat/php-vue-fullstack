@@ -10,16 +10,8 @@ use App\Models\OrderItem;
 use PDO;
 use Exception;
 
-/**
- * Order Repository
- * 
- * Handles all database operations for orders.
- */
 class OrderRepository extends BaseRepository
 {
-    /**
-     * Map database row to Order entity
-     */
     private function mapRow(array $row): Order
     {
         $order = new Order();
@@ -35,9 +27,6 @@ class OrderRepository extends BaseRepository
         return $order;
     }
 
-    /**
-     * Find order by ID
-     */
     public function findById(int $id): ?Order
     {
         $stmt = $this->db->prepare("SELECT * FROM orders WHERE id = :id");
@@ -46,9 +35,6 @@ class OrderRepository extends BaseRepository
         return $row ? $this->mapRow($row) : null;
     }
 
-    /**
-     * Find order by customer
-     */
     public function findByCustomer(int $id, int $customer_id): ?Order
     {
         $stmt = $this->db->prepare("SELECT * FROM orders WHERE id = :id AND customer_id = :customer_id");
@@ -57,9 +43,6 @@ class OrderRepository extends BaseRepository
         return $row ? $this->mapRow($row) : null;
     }
 
-    /**
-     * List orders by customer
-     */
     public function listByCustomer(int $customer_id): array
     {
         $stmt = $this->db->prepare("SELECT * FROM orders WHERE customer_id = :customer_id ORDER BY id DESC");
@@ -68,9 +51,6 @@ class OrderRepository extends BaseRepository
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
-    /**
-     * List all orders
-     */
     public function findAll(): array
     {
         $stmt = $this->db->query("SELECT * FROM orders ORDER BY id DESC");
@@ -78,9 +58,7 @@ class OrderRepository extends BaseRepository
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
-    /**
-     * Update order status
-     */
+
     public function updateStatus(int $id, string $status): int
     {
         $stmt = $this->db->prepare("UPDATE orders SET status = :status WHERE id=:id");
@@ -88,9 +66,6 @@ class OrderRepository extends BaseRepository
         return $stmt->rowCount();
     }
 
-    /**
-     * Create order with items (transactional)
-     */
     public function createOrder(int $customer_id, ?int $created_by, array $items, ?string $phone = null, ?string $shipping_address = null): int
     {
         if (empty($items)) {

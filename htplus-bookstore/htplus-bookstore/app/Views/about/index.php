@@ -10,52 +10,43 @@
 
 
     <div class="relative max-w-4xl mx-auto px-4 py-16 text-slate-100">
-        <h1 class="text-3xl md:text-4xl font-semibold mb-6 text-slate-50">About HTPLUS Book Store</h1>
+        <h1 class="text-3xl md:text-4xl font-semibold mb-6 text-slate-50">Về HTPLUS Book Store</h1>
 
         <p class="mb-4 text-sm md:text-base font-normal leading-relaxed text-slate-200">
-
-
-            HTPLUS Book Store is an internal demo project of <strong>HT Plus</strong>, a technology company that
-            focuses on building modern software solutions for businesses and education.  
-            This project is designed as a lightweight online bookstore to practice real-world web development.
+            HTPLUS Book Store là dự án demo nội bộ của <strong>HT Plus</strong>, một công ty công nghệ 
+            chuyên xây dựng các giải pháp phần mềm hiện đại cho doanh nghiệp và giáo dục.
+            Dự án này được thiết kế như một hiệu sách trực tuyến nhỏ gọn để thực hành phát triển web thực tế.
         </p>
 
        <p class="mb-4 text-sm md:text-base font-normal leading-relaxed text-slate-200">
-
-
-            The main goal of this application is to explore how to build a clean, maintainable codebase using
-            <strong>pure PHP</strong> with a custom <strong>MVC architecture</strong>, combined with
-            <strong>HTML, CSS (TailwindCSS)</strong>, and <strong>AJAX</strong> for smooth user interaction
-            without full page reloads.
+            Mục tiêu chính của ứng dụng này là khám phá cách xây dựng một codebase sạch sẽ, dễ bảo trì sử dụng
+            <strong>PHP thuần túy</strong> với <strong>kiến trúc MVC tùy chỉnh</strong>, kết hợp với
+            <strong>HTML, CSS (TailwindCSS)</strong>, và <strong>AJAX</strong> để tương tác mượt mà
+            mà không cần tải lại trang.
         </p>
 
        <p class="mb-4 text-sm md:text-base font-normal leading-relaxed text-slate-200">
-
-
-            Behind the scenes, the system uses <strong>MySQL</strong> for data storage, a structured database
-            for users, categories, products, and orders, and a simple authentication and authorization module.
-            The project is intentionally kept small but realistic so that it can be extended later with features
-            like order history, reviews, wishlists, and admin tools.
+            Phía sau hệ thống, chúng tôi sử dụng <strong>MySQL</strong> để lưu trữ dữ liệu, một cơ sở dữ liệu
+            có cấu trúc cho người dùng, danh mục, sản phẩm và đơn hàng, cùng với module xác thực và phân quyền đơn giản.
+            Dự án được cố tình giữ nhỏ gọn nhưng thực tế để có thể mở rộng sau này với các tính năng như
+            lịch sử đơn hàng, đánh giá, danh sách yêu thích và công cụ quản trị.
         </p>
 
       <p class="mb-4 text-sm md:text-base font-normal leading-relaxed text-slate-200">
-
-            For HT Plus team members, this bookstore serves as a practical playground to:
+            Đối với các thành viên của HT Plus, hiệu sách này đóng vai trò là sân chơi thực hành để:
         </p>
 
        <ul class="list-disc list-inside mb-4 text-sm md:text-base space-y-1 text-slate-200">
-
-            <li>Practice clean PHP coding with separation of concerns (models, controllers, views).</li>
-            <li>Work with REST-like endpoints and JSON responses using AJAX.</li>
-            <li>Improve front-end skills with TailwindCSS and responsive layouts.</li>
-            <li>Understand basic e-commerce flows: products, carts, and orders.</li>
-            <li>Prepare for future integrations with APIs or other microservices.</li>
+            <li>Thực hành code PHP sạch với tách biệt các concerns (models, controllers, views).</li>
+            <li>Làm việc với các REST-like endpoints và JSON responses sử dụng AJAX.</li>
+            <li>Cải thiện kỹ năng front-end với TailwindCSS và responsive layouts.</li>
+            <li>Hiểu về luồng e-commerce cơ bản: sản phẩm, giỏ hàng và đơn hàng.</li>
+            <li>Chuẩn bị cho các tích hợp tương lai với APIs hoặc các microservices khác.</li>
         </ul>
 
        <p class="mb-4 text-sm md:text-base font-normal leading-relaxed text-slate-200">
-
-            HTPLUS Book Store is not just a demo — it is a learning project that reflects how we approach
-            software development at HT Plus: simple, clear, and ready to grow.
+            HTPLUS Book Store không chỉ là một demo — đây là một dự án học tập phản ánh cách chúng tôi tiếp cận
+            phát triển phần mềm tại HT Plus: đơn giản, rõ ràng và sẵn sàng phát triển.
         </p>
 
         <a href="/"

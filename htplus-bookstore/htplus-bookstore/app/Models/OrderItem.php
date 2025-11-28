@@ -4,12 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-/**
- * OrderItem Entity
- * 
- * Represents an item in an order.
- * This is a plain data object (entity) without any database logic.
- */
 class OrderItem
 {
     public int $id;

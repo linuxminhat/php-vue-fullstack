@@ -4,12 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-/**
- * Product Entity
- * 
- * Represents a product in the system.
- * This is a plain data object (entity) without any database logic.
- */
 class Product
 {
     public int $id;

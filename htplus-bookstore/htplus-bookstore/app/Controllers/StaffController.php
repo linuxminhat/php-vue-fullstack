@@ -24,8 +24,6 @@ class StaffController
         $this->orderService = new OrderService();
         $this->userService = new UserService();
     }
-
-    // Check if user is staff or admin
     private function requireStaffAccess(): void
     {
         if (!Auth::isLoggedIn()) {
@@ -40,7 +38,6 @@ class StaffController
         }
     }
 
-    // === PRODUCTS MANAGEMENT (Staff) ===
     public function products()
     {
         $this->requireStaffAccess();
@@ -52,8 +49,7 @@ class StaffController
         $products = $this->productService->getAllProducts();
         $totalProducts = count($products);
         $totalPages = ceil($totalProducts / $limit);
-        
-        // Paginate manually
+    
         $paginatedProducts = array_slice($products, $offset, $limit);
         $categories = $this->categoryService->getAllCategories();
 
@@ -65,8 +61,6 @@ class StaffController
             'title' => 'Products Management (Staff)'
         ]);
     }
-
-    // === ORDERS MANAGEMENT (Staff) ===
     public function orders()
     {
         $this->requireStaffAccess();
@@ -74,16 +68,10 @@ class StaffController
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $limit = 15;
         $offset = ($page - 1) * $limit;
-
-        // Get all orders
         $allOrders = $this->orderService->getAllOrders();
         $totalOrders = count($allOrders);
         $totalPages = ceil($totalOrders / $limit);
-
-        // Paginate
         $orders = array_slice($allOrders, $offset, $limit);
-
-        // Attach customer names to orders
         foreach ($orders as $order) {
             $user = $this->userService->getUserById($order->customer_id);
             $order->customer_name = $user ? $user->full_name : 'Unknown';
@@ -96,8 +84,6 @@ class StaffController
             'title' => 'Orders Management (Staff)'
         ]);
     }
-
-    // Dashboard
     public function index()
     {
         $this->requireStaffAccess();

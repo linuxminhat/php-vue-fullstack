@@ -4,12 +4,12 @@
 
 <button id="openCreateModal"
     class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-    + New Client
+    + Thêm người dùng
 </button>
 
     <div id="createModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white w-1/3 rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold mb-4">Create User</h2>
+        <h2 class="text-xl font-bold mb-4">Tạo người dùng mới</h2>
 
         <form id="createForm" method="POST" action="/admin/users/create">
 
@@ -17,33 +17,33 @@
             <input type="email" name="email" required
                 class="w-full border px-3 py-2 rounded mb-3">
 
-            <label class="block mb-2">Password</label>
+            <label class="block mb-2">Mật khẩu</label>
             <input type="password" name="password" required
                 class="w-full border px-3 py-2 rounded mb-3">
 
-            <label class="block mb-2">Full Name</label>
+            <label class="block mb-2">Họ và tên</label>
             <input type="text" name="full_name" required
                 class="w-full border px-3 py-2 rounded mb-3">
 
-            <label class="block mb-2">Role</label>
+            <label class="block mb-2">Vai trò</label>
             <select name="role" class="w-full border px-3 py-2 rounded mb-3">
                 <option value="admin">Admin</option>
-                <option value="staff">Staff</option>
-                <option value="customer">Customer</option>
+                <option value="staff">Nhân viên</option>
+                <option value="customer">Khách hàng</option>
             </select>
 
-            <label class="block mb-2">Active Status</label>
+            <label class="block mb-2">Trạng thái</label>
             <select name="is_active" class="w-full border px-3 py-2 rounded mb-4">
-                <option value="1">Active</option>
-                <option value="0">Inactive</option>
+                <option value="1">Hoạt động</option>
+                <option value="0">Vô hiệu hóa</option>
             </select>
 
             <div class="flex justify-end space-x-2">
                 <button type="button" id="closeCreateModal"
-                        class="px-4 py-2 bg-gray-400 rounded text-white">Cancel</button>
+                        class="px-4 py-2 bg-gray-400 rounded text-white">Hủy</button>
 
                 <button type="submit"
-                        class="px-4 py-2 bg-blue-600 rounded text-white">Create</button>
+                        class="px-4 py-2 bg-blue-600 rounded text-white">Tạo mới</button>
             </div>
         </form>
     </div>
@@ -56,10 +56,10 @@
             <tr class="text-left">
                 <th class="py-3 px-4">ID</th>
                 <th class="py-3 px-4">Email</th>
-                <th class="py-3 px-4">Password (hashed)</th>
-                <th class="py-3 px-4">Full Name</th>
-                <th class="py-3 px-4">Role</th>
-                <th class="py-3 px-4">Action</th>
+                <th class="py-3 px-4">Mật khẩu (mã hóa)</th>
+                <th class="py-3 px-4">Họ và tên</th>
+                <th class="py-3 px-4">Vai trò</th>
+                <th class="py-3 px-4">Hành động</th>
             </tr>
             </thead>
 
@@ -89,10 +89,10 @@
                             data-id="<?= $u->id ?>"
                             data-name="<?= $u->full_name ?>"
                             data-role="<?= $u->role ?>"
-                            data-active="<?= $u->is_active ?>">Edit
+                            data-active="<?= $u->is_active ?>">Sửa
                         </button>
                         <a class="px-3 py-1 bg-red-500 text-white rounded"
-                        href="/admin/users/delete?id=<?= $u->id ?>">Delete</a>
+                        href="/admin/users/delete?id=<?= $u->id ?>">Xóa</a>
 
                     </td>
                 </tr>

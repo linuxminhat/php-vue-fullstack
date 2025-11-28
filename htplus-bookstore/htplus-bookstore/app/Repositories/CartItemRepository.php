@@ -8,17 +8,8 @@ use App\Core\BaseRepository;
 use App\Models\CartItem;
 use PDO;
 
-/**
- * CartItem Repository
- * 
- * Handles all database operations for cart items.
- * Logic giữ nguyên 100% từ CartItem Model cũ.
- */
 class CartItemRepository extends BaseRepository
 {
-    /**
-     * Map database row to CartItem entity
-     */
     private function mapRow(array $row): CartItem
     {
         $ci = new CartItem();
@@ -32,9 +23,6 @@ class CartItemRepository extends BaseRepository
         return $ci;
     }
 
-    /**
-     * Find cart item by cart_id and product_id
-     */
     public function findItem(int $cart_id, int $product_id): ?CartItem
     {
         $stmt = $this->db->prepare("
@@ -48,9 +36,6 @@ class CartItemRepository extends BaseRepository
         return $row ? $this->mapRow($row) : null;
     }
 
-    /**
-     * Add item to cart (or update if exists)
-     */
     public function addItem(int $cart_id, int $product_id, int $quantity, float $price): void
     {
         $existing = $this->findItem($cart_id, $product_id);
@@ -84,9 +69,6 @@ class CartItemRepository extends BaseRepository
         ]);
     }
 
-    /**
-     * Update cart item quantity
-     */
     public function updateQuantity(int $id, int $quantity): void
     {
         if ($quantity <= 0) {
@@ -103,27 +85,18 @@ class CartItemRepository extends BaseRepository
         $stmt->execute(['q' => $quantity, 'id' => $id]);
     }
 
-    /**
-     * Remove cart item
-     */
     public function removeItem(int $id): void
     {
         $stmt = $this->db->prepare("DELETE FROM cart_items WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
 
-    /**
-     * Clear all items in cart
-     */
     public function clear(int $cart_id): void
     {
         $stmt = $this->db->prepare("DELETE FROM cart_items WHERE cart_id = :cid");
         $stmt->execute(['cid' => $cart_id]);
     }
 
-    /**
-     * Get cart_id by cart_item_id
-     */
     public function getCartIdByItemId(int $item_id): ?int
     {
         $stmt = $this->db->prepare("SELECT cart_id FROM cart_items WHERE id = :id");
@@ -132,9 +105,6 @@ class CartItemRepository extends BaseRepository
         return $result ? (int)$result : null;
     }
 
-    /**
-     * Verify product price matches database
-     */
     public function verifyProductPrice(int $productId, float $priceInput): bool
     {
         $stmt = $this->db->prepare("
@@ -148,9 +118,7 @@ class CartItemRepository extends BaseRepository
         return (float)$dbPrice === $priceInput;
     }
 
-    /**
-     * Check if user owns the cart item
-     */
+
     public function isOwner(int $cartItemId, int $userId): bool
     {
         $stmt = $this->db->prepare("SELECT cart_id FROM cart_items WHERE id = :id");
@@ -168,9 +136,6 @@ class CartItemRepository extends BaseRepository
         return ((int)$owner === (int)$userId);
     }
 
-    /**
-     * List all items in cart with product details
-     */
     public function listByCartId(int $cart_id): array
     {
         $stmt = $this->db->prepare("
@@ -192,9 +157,6 @@ class CartItemRepository extends BaseRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Count total items quantity in cart
-     */
     public function countItems(int $cart_id): int
     {
         $stmt = $this->db->prepare("

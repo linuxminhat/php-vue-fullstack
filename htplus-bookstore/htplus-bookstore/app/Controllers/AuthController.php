@@ -61,13 +61,11 @@ class AuthController extends BaseController
                     \App\Core\View::render('auth.login', [
                         'title' => "Login",
                         'error' => "⚠️ Email hoặc mật khẩu không đúng! Vui lòng thử lại.",
-                        'email' => $email, // Giữ lại email đã nhập
+                        'email' => $email,  
                     ], 'auth');
                 }
                 return;
             }
-
-            // Login with Remember Me option
             Auth::login($user, $remember);
             
             if ($isJson) {
@@ -95,7 +93,7 @@ class AuthController extends BaseController
                 \App\Core\View::render('auth.login', [
                     'title' => "Login",
                     "error" => "⚠️ " . $e->getMessage(),
-                    'email' => $email, // Giữ lại email đã nhập
+                    'email' => $email,  
                 ], 'auth');
             }
         }

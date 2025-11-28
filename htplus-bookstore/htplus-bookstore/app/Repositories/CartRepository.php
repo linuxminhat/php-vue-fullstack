@@ -8,17 +8,9 @@ use App\Core\BaseRepository;
 use App\Models\Cart;
 use PDO;
 
-/**
- * Cart Repository
- * 
- * Handles all database operations for carts.
- * Logic giữ nguyên 100% từ Cart Model cũ.
- */
 class CartRepository extends BaseRepository
 {
-    /**
-     * Map database row to Cart entity
-     */
+
     private function mapRow(array $row): Cart
     {
         $c = new Cart();
@@ -31,10 +23,6 @@ class CartRepository extends BaseRepository
         $c->updated_at = $row["updated_at"];
         return $c;
     }
-
-    /**
-     * Get active cart for customer
-     */
     public function getActiveCart(int $customer_id): ?Cart
     {
         $stmt = $this->db->prepare("
@@ -47,10 +35,6 @@ class CartRepository extends BaseRepository
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ? $this->mapRow($row) : null;
     }
-
-    /**
-     * Find cart by ID
-     */
     public function findById(int $id): ?Cart
     {
         $stmt = $this->db->prepare("SELECT * FROM carts WHERE id = :id");
@@ -60,9 +44,6 @@ class CartRepository extends BaseRepository
         return $row ? $this->mapRow($row) : null;
     }
 
-    /**
-     * Create new cart
-     */
     public function createCart(int $customer_id, ?int $created_by = null): int
     {
         $existing = $this->getActiveCart($customer_id);
@@ -81,9 +62,6 @@ class CartRepository extends BaseRepository
         return (int)$this->db->lastInsertId();
     }
 
-    /**
-     * Sync cart total amount based on items
-     */
     public function syncTotalAmount(int $cart_id): void
     {
         $stmt = $this->db->prepare("
@@ -99,18 +77,12 @@ class CartRepository extends BaseRepository
         $stmt->execute(["cid" => $cart_id]);
     }
 
-    /**
-     * List all carts
-     */
     public function listAll(): array
     {
         $stmt = $this->db->query("SELECT * FROM carts ORDER BY id DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get or create cart for customer
-     */
     public function getOrCreateCart(int $customer_id): int
     {
         $cart = $this->getActiveCart($customer_id);
@@ -120,9 +92,6 @@ class CartRepository extends BaseRepository
         return $this->createCart($customer_id);
     }
 
-    /**
-     * Get total amount of cart
-     */
     public function getTotal(int $cart_id): float
     {
         $cart = $this->findById($cart_id);

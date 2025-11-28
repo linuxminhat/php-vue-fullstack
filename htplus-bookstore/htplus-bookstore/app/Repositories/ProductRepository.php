@@ -8,16 +8,9 @@ use App\Core\BaseRepository;
 use App\Models\Product;
 use PDO;
 
-/**
- * Product Repository
- * 
- * Handles all database operations for products.
- */
 class ProductRepository extends BaseRepository
 {
-    /**
-     * Map database row to Product entity
-     */
+
     private function mapRow(array $row): Product
     {
         $product = new Product();
@@ -37,9 +30,6 @@ class ProductRepository extends BaseRepository
         return $product;
     }
 
-    /**
-     * Get all products
-     */
     public function findAll(): array
     {
         $stmt = $this->db->prepare("SELECT * FROM products ORDER BY id DESC");
@@ -48,9 +38,6 @@ class ProductRepository extends BaseRepository
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
-    /**
-     * Find product by ID
-     */
     public function findById(int $id): ?Product
     {
         $stmt = $this->db->prepare('SELECT * FROM products WHERE id=:id LIMIT 1');
@@ -59,9 +46,6 @@ class ProductRepository extends BaseRepository
         return $row ? $this->mapRow($row) : null;
     }
 
-    /**
-     * Find product by name
-     */
     public function findByName(string $name): ?Product
     {
         $stmt = $this->db->prepare('SELECT * FROM products WHERE name=:name LIMIT 1');
@@ -70,9 +54,6 @@ class ProductRepository extends BaseRepository
         return $row ? $this->mapRow($row) : null;
     }
 
-    /**
-     * Create new product
-     */
     public function create(array $data): int
     {
         $stmt = $this->db->prepare(
@@ -95,9 +76,6 @@ class ProductRepository extends BaseRepository
         return (int) $this->db->lastInsertId();
     }
 
-    /**
-     * Update product
-     */
     public function update(int $id, array $data): int
     {
         $stmt = $this->db->prepare(
@@ -132,9 +110,6 @@ class ProductRepository extends BaseRepository
         return $stmt->rowCount();
     }
 
-    /**
-     * Delete product
-     */
     public function delete(int $id): int
     {
         $stmt = $this->db->prepare('DELETE FROM products WHERE id=:id');
@@ -142,9 +117,6 @@ class ProductRepository extends BaseRepository
         return $stmt->rowCount();
     }
 
-    /**
-     * Count all products
-     */
     public function countAll(): int
     {
         $stmt = $this->db->prepare('SELECT COUNT(*) AS total from products');
@@ -153,9 +125,6 @@ class ProductRepository extends BaseRepository
         return (int) ($row['total'] ?? 0);
     }
 
-    /**
-     * Get paginated products
-     */
     public function getPaged(int $limit, int $offset): array
     {
         $stmt = $this->db->prepare(
@@ -168,9 +137,6 @@ class ProductRepository extends BaseRepository
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
-    /**
-     * Count filtered products
-     */
     public function countFiltered(array $filters): int
     {
         $q = trim($filters['q'] ?? '');
@@ -196,10 +162,6 @@ class ProductRepository extends BaseRepository
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return (int)($row['total'] ?? 0);
     }
-
-    /**
-     * Get filtered and sorted products
-     */
     public function getFiltered(array $filters, string $sort, int $limit, int $offset): array
     {
         $sql    = 'SELECT * FROM products WHERE 1=1';
@@ -254,9 +216,6 @@ class ProductRepository extends BaseRepository
         return array_map(fn($row) => $this->mapRow($row), $rows);
     }
 
-    /**
-     * Get related products by category (excluding current product)
-     */
     public function getRelatedByCategory(int $categoryId, int $excludeProductId, int $limit = 4): array
     {
         if ($categoryId <= 0) {

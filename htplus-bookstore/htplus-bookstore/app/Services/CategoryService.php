@@ -7,12 +7,6 @@ namespace App\Services;
 use App\Repositories\CategoryRepository;
 use App\Models\Category;
 use RuntimeException;
-
-/**
- * Category Service
- * 
- * Handles business logic for categories.
- */
 class CategoryService
 {
     private CategoryRepository $repository;
@@ -21,26 +15,14 @@ class CategoryService
     {
         $this->repository = new CategoryRepository();
     }
-
-    /**
-     * Get all categories
-     */
     public function getAllCategories(): array
     {
         return $this->repository->findAll();
     }
-
-    /**
-     * Get category by ID
-     */
     public function getCategoryById(int $id): ?Category
     {
         return $this->repository->findById($id);
     }
-
-    /**
-     * Create new category
-     */
     public function createCategory(string $name): int
     {
         $name = trim($name);
@@ -57,10 +39,6 @@ class CategoryService
 
         return $this->repository->create($name);
     }
-
-    /**
-     * Update category
-     */
     public function updateCategory(int $id, string $name): bool
     {
         $name = trim($name);
@@ -83,10 +61,6 @@ class CategoryService
         $rowsAffected = $this->repository->update($id, $name);
         return $rowsAffected > 0;
     }
-
-    /**
-     * Delete category
-     */
     public function deleteCategory(int $id): bool
     {
         $category = $this->repository->findById($id);
