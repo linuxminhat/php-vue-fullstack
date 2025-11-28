@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Core\BaseController;
 use App\Core\Auth;
 use App\Models\User;
+use App\Models\Order;
 
 class AccountController extends BaseController {
 
@@ -13,9 +14,15 @@ class AccountController extends BaseController {
             exit();
         }
         $user = Auth::user();
+        
+        // Get user's orders
+        $orderModel = new Order();
+        $orders = $orderModel->listByCustomer($user->id);
+        
         \App\Core\View::render('account/index', [
             'title' => 'My Account',
             'user' => $user,
+            'orders' => $orders,
         ],'main');
     }
     

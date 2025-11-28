@@ -41,7 +41,6 @@ $categories = $categories ?? (new \App\Models\Category())->listAllCategory();
 
             <!-- All Books -->
             <a href="/products" class="<?= nav_active('/products') ?>">All Books</a>
-            <a href="#" class="hover:text-green-600">Book Exchange</a>
 
             <?php if (Auth::isLoggedIn()): ?>
                 <a href="/account" class="<?= nav_active('/account') ?>">My Account</a>

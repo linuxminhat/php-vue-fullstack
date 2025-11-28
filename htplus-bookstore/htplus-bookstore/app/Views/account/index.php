@@ -25,11 +25,6 @@
             ORDERS
         </a>
         
-        <a href="/account?tab=addresses" 
-           class="block px-6 py-4 <?= (isset($_GET['tab']) && $_GET['tab'] === 'addresses') ? 'bg-green-400 text-white font-semibold' : 'hover:bg-gray-100' ?>">
-            ADDRESSES
-        </a>
-        
         <a href="/account?tab=details" 
            class="block px-6 py-4 <?= (isset($_GET['tab']) && $_GET['tab'] === 'details') ? 'bg-green-400 text-white font-semibold' : 'hover:bg-gray-100' ?>">
             ACCOUNT DETAILS
@@ -64,8 +59,6 @@
             <p class="text-gray-600">
                 From your account dashboard you can view your 
                 <a href="/account?tab=orders" class="text-green-600 underline">recent orders</a>, 
-                manage your 
-                <a href="/account?tab=addresses" class="text-green-600 underline">shipping and billing addresses</a>, 
                 and 
                 <a href="/account?tab=details" class="text-green-600 underline">edit your password and account details</a>.
             </p>
@@ -83,28 +76,85 @@
                     <tr class="border-b-2 border-gray-200">
                         <th class="py-3 px-4 font-semibold">Order</th>
                         <th class="py-3 px-4 font-semibold">Date</th>
+                        <th class="py-3 px-4 font-semibold">Phone</th>
+                        <th class="py-3 px-4 font-semibold">Shipping Address</th>
                         <th class="py-3 px-4 font-semibold">Status</th>
                         <th class="py-3 px-4 font-semibold">Total</th>
-                        <th class="py-3 px-4 font-semibold">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <?php if (empty($orders)): ?>
                     <tr class="border-b border-gray-100">
-                        <td colspan="5" class="py-8 text-center text-gray-500">
+                        <td colspan="6" class="py-8 text-center text-gray-500">
                             <p class="text-lg mb-2">No orders yet.</p>
                             <a href="/products" class="text-green-600 underline">Browse products</a>
                         </td>
                     </tr>
+                    <?php else: ?>
+                        <?php foreach ($orders as $order): ?>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                            <!-- Order ID -->
+                            <td class="py-4 px-4">
+                                <a href="/orders/my" class="text-green-600 hover:underline font-medium">
+                                    #<?= str_pad($order->id, 6, '0', STR_PAD_LEFT) ?>
+                                </a>
+                            </td>
+                            
+                            <!-- Date -->
+                            <td class="py-4 px-4 text-gray-700">
+                                <?= date('d/m/Y', strtotime($order->created_at)) ?>
+                            </td>
+                            
+                            <!-- Phone -->
+                            <td class="py-4 px-4 text-gray-700">
+                                <?= View::e($order->phone ?? '-') ?>
+                            </td>
+                            
+                            <!-- Shipping Address -->
+                            <td class="py-4 px-4 text-gray-700 max-w-xs">
+                                <div class="truncate" title="<?= View::e($order->shipping_address ?? '-') ?>">
+                                    <?= View::e($order->shipping_address ?? '-') ?>
+                                </div>
+                            </td>
+                            
+                            <!-- Status -->
+                            <td class="py-4 px-4">
+                                <?php
+                                $statusConfig = [
+                                    'pending' => ['label' => 'Chờ xác nhận', 'class' => 'bg-yellow-100 text-yellow-800 border-yellow-300'],
+                                    'confirmed' => ['label' => 'Đã xác nhận', 'class' => 'bg-blue-100 text-blue-800 border-blue-300'],
+                                    'shipping' => ['label' => 'Đang giao', 'class' => 'bg-purple-100 text-purple-800 border-purple-300'],
+                                    'completed' => ['label' => 'Hoàn thành', 'class' => 'bg-green-100 text-green-800 border-green-300'],
+                                    'cancelled' => ['label' => 'Đã hủy', 'class' => 'bg-red-100 text-red-800 border-red-300'],
+                                ];
+                                $status = $statusConfig[$order->status] ?? ['label' => ucfirst($order->status), 'class' => 'bg-gray-100 text-gray-800 border-gray-300'];
+                                ?>
+                                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold border <?= $status['class'] ?>">
+                                    <?= $status['label'] ?>
+                                </span>
+                            </td>
+                            
+                            <!-- Total -->
+                            <td class="py-4 px-4 font-semibold text-green-600">
+                                <?= View::currency($order->total_amount) ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
+        
+        <?php if (!empty($orders)): ?>
+        <div class="mt-6 text-center">
+            <a href="/orders/my" class="inline-block px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition">
+                View All Orders Details
+            </a>
+        </div>
+        <?php endif; ?>
     </div>
         
-    <?php elseif ($currentTab === 'addresses'): ?>
-        <!-- ADDRESSES TAB (Bước 5) -->
-        <p>Addresses content sẽ ở đây</p>
-        
-        <?php elseif ($currentTab === 'details'): ?>
+    <?php elseif ($currentTab === 'details'): ?>
     <!-- ACCOUNT DETAILS TAB -->
     <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-xl font-semibold mb-6">Account Details</h2>

@@ -9,15 +9,23 @@ use Exception;
 class Order extends BaseModel { 
     public int $id;
     public int $customer_id;
+    public ?string $phone;
+    public ?string $shipping_address;
     public ?int $created_by;    
     public string $status;
     public float $total_amount;
     public string $created_at;
     public ?string $updated_at;
+    
+    // For admin display
+    public ?string $customer_name = null;
+    
     private static function mapRow(array $row): self { 
         $order = new self();
         $order->id = (int)$row["id"];
         $order->customer_id = (int)$row["customer_id"];
+        $order->phone = $row["phone"] ?? null;
+        $order->shipping_address = $row["shipping_address"] ?? null;
         $order->created_by = $row["created_by"] !== null ? (int) $row["created_by"] : null;
         $order->status = $row["status"];
         $order->total_amount = (float) $row["total_amount"];
@@ -41,7 +49,7 @@ class Order extends BaseModel {
     }
 
     public function listByCustomer(int $customer_id):array {
-        $stmt = $this->db->prepare("SELECT * FROM orders WHERE customer_id = :customer_id ORDER BY DESC");
+        $stmt = $this->db->prepare("SELECT * FROM orders WHERE customer_id = :customer_id ORDER BY id DESC");
         $stmt->execute(["customer_id"=>$customer_id]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(fn($row) => self::mapRow($row), $rows);
@@ -58,7 +66,7 @@ class Order extends BaseModel {
         $stmt->execute(["id" => $id, "status" => $status]);
         return $stmt->rowCount();
     }
-    public function createOrder(int $customer_id, ?int $created_by, array $items): int{
+    public function createOrder(int $customer_id, ?int $created_by, array $items, ?string $phone = null, ?string $shipping_address = null): int{
     if (empty($items)) {
         throw new Exception("Order must contain at least one item");
     }
@@ -114,14 +122,16 @@ class Order extends BaseModel {
         }
 
         $insertOrder = $this->db->prepare(
-            "INSERT INTO orders (customer_id, created_by, status, total_amount)
-             VALUES (:customer_id, :created_by, :status, :total_amount)"
+            "INSERT INTO orders (customer_id, phone, shipping_address, created_by, status, total_amount)
+             VALUES (:customer_id, :phone, :shipping_address, :created_by, :status, :total_amount)"
         );
         $insertOrder->execute([
-            'customer_id'  => $customer_id,
-            'created_by'   => $created_by,
-            'status'       => 'pending',
-            'total_amount' => $totalAmount,
+            'customer_id'      => $customer_id,
+            'phone'            => $phone,
+            'shipping_address' => $shipping_address,
+            'created_by'       => $created_by,
+            'status'           => 'pending',
+            'total_amount'     => $totalAmount,
         ]);
 
         $orderID = (int)$this->db->lastInsertId();

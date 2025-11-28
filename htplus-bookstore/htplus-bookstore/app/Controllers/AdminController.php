@@ -4,6 +4,9 @@ namespace App\Controllers;
 use App\Core\View;
 use App\Core\Auth;
 use App\Models\User;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Order;
 
 class AdminController { 
     public function index() {
@@ -31,6 +34,71 @@ class AdminController {
     ]);
 
 }
+
+    // === PRODUCTS MANAGEMENT ===
+    public function products() {
+        if (!Auth::isAdmin()) {
+            http_response_code(403);
+            die("Access Denied");
+        }
+
+        $productModel = new Product();
+        $categoryModel = new Category();
+
+        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+        
+        $totalProducts = $productModel->countAll();
+        $totalPages = ceil($totalProducts / $limit);
+
+        $products = $productModel->getPaged($limit, $offset);
+        $categories = $categoryModel->listAllCategory();
+
+        View::render('admin.products.index', [
+            'products' => $products,
+            'categories' => $categories,
+            'page' => $page,
+            'totalPages' => $totalPages,
+            'title' => 'Products Management'
+        ]);
+    }
+
+    // === ORDERS MANAGEMENT ===
+    public function orders() {
+        if (!Auth::isAdmin()) {
+            http_response_code(403);
+            die("Access Denied");
+        }
+
+        $orderModel = new Order();
+        $userModel = new User();
+
+        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $limit = 15;
+        $offset = ($page - 1) * $limit;
+
+        // Get all orders
+        $allOrders = $orderModel->listAll();
+        $totalOrders = count($allOrders);
+        $totalPages = ceil($totalOrders / $limit);
+
+        // Paginate
+        $orders = array_slice($allOrders, $offset, $limit);
+
+        // Attach customer names to orders
+        foreach ($orders as $order) {
+            $user = $userModel->findById($order->customer_id);
+            $order->customer_name = $user ? $user->full_name : 'Unknown';
+        }
+
+        View::render('admin.orders.index', [
+            'orders' => $orders,
+            'page' => $page,
+            'totalPages' => $totalPages,
+            'title' => 'Orders Management'
+        ]);
+    }
 
     public function update() { 
     if(!Auth::isAdmin()){

@@ -144,7 +144,7 @@ public function updateProduct(): void
         return;
     }
 
-    if ($data["name"] === "" || $data["sku"] === "" || $data["description "]) {
+    if ($data["name"] === "" || $data["sku"] === "" || $data["description"] === "") {
         $this->json([
             "success" => false,
             "message" => "Name Or SKU Or Description is required",
@@ -170,7 +170,9 @@ public function updateProduct(): void
         return;
     }
 
- 
+    // Keep old image if no new image uploaded
+    $data['image'] = $product->image; // Default to existing image
+
     if (!$isJson && isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] !== UPLOAD_ERR_NO_FILE) {
         try {
             $imageUrl = FileUploader::uploadBookImage($_FILES['cover_image']);

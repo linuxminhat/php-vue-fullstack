@@ -45,6 +45,12 @@ $router->post('/auth/createUser', [AuthController::class, 'createUser']);
 //Admin Page 
 $router->get('/admin', [AdminController::class, 'index']);
 
+// Admin - Products Management (HTML View)
+$router->get('/admin/products', [AdminController::class, 'products']);
+
+// Admin - Orders Management (HTML View)
+$router->get('/admin/orders', [AdminController::class, 'orders']);
+
 //Category API (Admin)
 $router->get('/admin/categories', [CategoryController::class, 'listAllCategory']);
 $router->post('/admin/categories/create', [CategoryController::class, 'createNewCategory']);
@@ -52,7 +58,7 @@ $router->post('/admin/categories/update', [CategoryController::class, 'updateCat
 $router->post('/admin/categories/delete', [CategoryController::class, 'deleteCategory']);
 
 //Product API (Admin/Staff)
-$router->get('/admin/products', [ProductController::class, 'listAllProduct']);
+$router->get('/admin/products/list', [ProductController::class, 'listAllProduct']);
 $router->post('/admin/products/create', [ProductController::class, 'createNewProduct']);
 $router->post('/admin/products/update', [ProductController::class, 'updateProduct']);
 $router->post('/admin/products/delete', [ProductController::class, 'deleteProduct']);
@@ -71,7 +77,7 @@ $router->get('/orders/my/detail', [OrderController::class, 'myOrderDetail']);
 
 //Order API - Admin/Staff
 $router->post('/admin/orders/create', [OrderController::class, 'createForCustomerByStaff']);
-$router->get('/admin/orders', [OrderController::class, 'adminListOrders']);
+$router->get('/admin/orders/list', [OrderController::class, 'adminListOrders']);
 $router->get('/admin/orders/detail', [OrderController::class, 'adminOrderDetail']);
 $router->post('/admin/orders/update-status', [OrderController::class, 'adminUpdateStatus']);
 
@@ -91,6 +97,10 @@ $router->get('/cart', [CartController::class, 'index']);
 $router->post('/cart/add', [CartController::class, 'addToCart']);   
 $router->post('/cart/update-qty', [CartController::class, 'updateQuantity']);  
 $router->post('/cart/remove-item', [CartController::class, 'removeItem']);    
+
+// Checkout
+$router->get('/checkout', [OrderController::class, 'showCheckout']);
+$router->post('/checkout', [OrderController::class, 'processCheckout']);
 
 //Do routes 
 $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
