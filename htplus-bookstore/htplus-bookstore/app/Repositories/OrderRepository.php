@@ -68,6 +68,7 @@ class OrderRepository extends BaseRepository
 
     public function createOrder(int $customer_id, ?int $created_by, array $items, ?string $phone = null, ?string $shipping_address = null): int
     {
+        //order at least contain 1 item
         if (empty($items)) {
             throw new Exception("Order must contain at least one item");
         }
@@ -85,13 +86,14 @@ class OrderRepository extends BaseRepository
                 if ($productID <= 0 || $quantity <= 0) {
                     throw new Exception("Invalid product ID or quantity");
                 }
-
+                
                 $stmt = $this->db->prepare(
                     "SELECT id, price, stock 
                      FROM products 
                      WHERE id = :id 
                      FOR UPDATE"
                 );
+
                 $stmt->execute(['id' => $productID]);
                 $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -114,6 +116,7 @@ class OrderRepository extends BaseRepository
                     'line_total' => $lineTotal,
                 ];
                 
+                //update stock product 
                 $update = $this->db->prepare(
                     "UPDATE products 
                      SET stock = stock - :quantity 

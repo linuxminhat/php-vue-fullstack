@@ -27,6 +27,7 @@ class CartController extends BaseController
         return (int)Auth::id();
     }
 
+    //view cart page 
     public function index(): void
     {
         $userId = $this->authUserId();
@@ -61,6 +62,7 @@ class CartController extends BaseController
     {
         $userId = $this->authUserId();
 
+        //get request data 
         $data = json_decode(file_get_contents("php://input"), true) ?? $_POST;
         $productId = (int)($data['product_id'] ?? 0);
         $quantity = (int)($data['quantity'] ?? 1);
@@ -71,6 +73,7 @@ class CartController extends BaseController
             return;
         }
 
+        //prevent user edit price on client side
         if (!$this->cartService->verifyProductPrice($productId, $price)) {
             $this->json(['success' => false, 'message' => 'Giá sản phẩm không đúng'], 400);
             return;

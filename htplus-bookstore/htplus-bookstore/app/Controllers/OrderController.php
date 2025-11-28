@@ -24,6 +24,7 @@ class OrderController extends BaseController
         $this->userService = new UserService();
     }
 
+    //view checkout page 
     public function showCheckout(): void
     {
         if (!Auth::isLoggedIn()) {
@@ -60,7 +61,6 @@ class OrderController extends BaseController
 
         $userId = (int)Auth::id();
         $data = json_decode(file_get_contents("php://input"), true) ?? $_POST;
-
         $phone = trim($data['phone'] ?? '');
         $address = trim($data['shipping_address'] ?? '');
 
@@ -109,7 +109,7 @@ class OrderController extends BaseController
             ], 400);
         }
     }
-
+    
     public function createForCustomer(): void
     {
         $user = $this->requireRole(['customer']);

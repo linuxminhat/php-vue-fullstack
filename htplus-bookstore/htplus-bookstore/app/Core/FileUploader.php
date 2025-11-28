@@ -31,19 +31,20 @@ class FileUploader {
         if($ext === false) { 
             throw new \RuntimeException("Only allowed jpg/png/gif");
         }
+
         $baseName = bin2hex(random_bytes(8));
         $fileName = $baseName . '.' . $ext;
         $uploadDir = __DIR__ . '/../../public/uploads/books';
         if(!is_dir($uploadDir)){
             mkdir($uploadDir,0777,true);
         }
+        //return path in database 
         $targetPath = $uploadDir . '/' . $fileName;
                if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
             throw new \RuntimeException('Không thể lưu file');
         }
 
         return '/uploads/books/' . $fileName;
-        return "";
     }
 } 
 ?>

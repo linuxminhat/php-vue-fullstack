@@ -162,6 +162,7 @@ class ProductRepository extends BaseRepository
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return (int)($row['total'] ?? 0);
     }
+    
     public function getFiltered(array $filters, string $sort, int $limit, int $offset): array
     {
         $sql    = 'SELECT * FROM products WHERE 1=1';

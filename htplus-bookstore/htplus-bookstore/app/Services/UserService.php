@@ -58,16 +58,12 @@ class UserService
             throw new RuntimeException("User not found");
         }
 
-        // Validate email
         if (!empty($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             throw new RuntimeException("Invalid email address");
         }
-
-        // If password is being updated, hash it
         if (!empty($data['password'])) {
             $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         } else {
-            // Keep existing password if not updating
             $data['password'] = $user->password;
         }
 
@@ -90,12 +86,9 @@ class UserService
             throw new RuntimeException("User not found");
         }
 
-        // Verify current password
         if (!password_verify($currentPassword, $user->password)) {
             throw new RuntimeException("Current password is incorrect");
         }
-
-        // Validate new password
         if (strlen($newPassword) < 6) {
             throw new RuntimeException("New password must be at least 6 characters");
         }

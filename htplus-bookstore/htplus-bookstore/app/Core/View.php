@@ -6,6 +6,7 @@ namespace App\Core;
 
 class View
 {
+    //share layouts
     private static string $layoutPath = __DIR__ . '/../Views/layouts/';
     private static string $viewPath = __DIR__ . '/../Views/';
 
@@ -13,8 +14,10 @@ class View
     {
         extract($data);
         
+        //output buffering 
         ob_start();
         
+        //about.index -> about/index.php
         $viewFile = self::$viewPath . str_replace('.', '/', $view) . '.php';
         
         if (!file_exists($viewFile)) {
@@ -38,6 +41,7 @@ class View
         }
     }
     
+    //render navabar 
     public static function partial(string $view, array $data = []): void
     {
         self::render($view, $data, null);
@@ -53,11 +57,13 @@ class View
         }
     }
     
+    //prevent XSS
     public static function e($value): string
     {
         return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
     }
     
+    //format money 
     public static function currency($amount): string
     {
         return number_format((float)$amount, 0, ',', '.') . '₫';
@@ -76,6 +82,7 @@ class View
         return '/assets/' . ltrim($path, '/');
     }
     
+    //url('book') => http://localhost/book
     public static function url(string $path = ''): string
     {
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
@@ -83,6 +90,7 @@ class View
         return $protocol . '://' . $host . '/' . ltrim($path, '/');
     }
     
+
     public static function csrf(): string
     {
         if (!isset($_SESSION['csrf_token'])) {

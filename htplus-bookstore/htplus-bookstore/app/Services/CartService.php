@@ -42,38 +42,25 @@ class CartService
             throw new RuntimeException("Quantity must be greater than 0");
         }
 
-        // Get product and verify it exists
         $product = $this->productRepository->findById($productId);
         if (!$product) {
             throw new RuntimeException("Product not found");
         }
 
-        // Check stock
         if ($product->stock < $quantity) {
             throw new RuntimeException("Insufficient stock");
         }
-
-        // Get or create cart
         $cartId = $this->getOrCreateCart($customerId);
-
-        // Add item to cart
         $this->cartItemRepository->addItem($cartId, $productId, $quantity, $product->price);
-
-        // Sync cart total
         $this->cartRepository->syncTotalAmount($cartId);
     }
 
     public function updateCartItemQuantity(int $cartItemId, int $quantity, int $userId): void
     {
-        // Verify ownership
         if (!$this->cartItemRepository->isOwner($cartItemId, $userId)) {
             throw new RuntimeException("Unauthorized");
         }
-
-        // Update quantity
         $this->cartItemRepository->updateQuantity($cartItemId, $quantity);
-
-        // Get cart_id and sync total
         $cartId = $this->cartItemRepository->getCartIdByItemId($cartItemId);
         if ($cartId) {
             $this->cartRepository->syncTotalAmount($cartId);
@@ -81,18 +68,11 @@ class CartService
     }
     public function removeCartItem(int $cartItemId, int $userId): void
     {
-        // Verify ownership
         if (!$this->cartItemRepository->isOwner($cartItemId, $userId)) {
             throw new RuntimeException("Unauthorized");
         }
-
-        // Get cart_id before removing
         $cartId = $this->cartItemRepository->getCartIdByItemId($cartItemId);
-
-        // Remove item
         $this->cartItemRepository->removeItem($cartItemId);
-
-        // Sync cart total
         if ($cartId) {
             $this->cartRepository->syncTotalAmount($cartId);
         }

@@ -23,6 +23,7 @@ class CartRepository extends BaseRepository
         $c->updated_at = $row["updated_at"];
         return $c;
     }
+
     public function getActiveCart(int $customer_id): ?Cart
     {
         $stmt = $this->db->prepare("
@@ -35,6 +36,7 @@ class CartRepository extends BaseRepository
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ? $this->mapRow($row) : null;
     }
+    
     public function findById(int $id): ?Cart
     {
         $stmt = $this->db->prepare("SELECT * FROM carts WHERE id = :id");

@@ -30,6 +30,7 @@ class AccountController extends BaseController
         $user = Auth::user();
         $orders = $this->orderService->getCustomerOrders($user->id);
 
+        //get orderlist of user 
         \App\Core\View::render('account/index', [
             'title' => 'My Account',
             'user' => $user,
@@ -48,6 +49,7 @@ class AccountController extends BaseController
         }
 
         header('Content-Type: application/json');
+        
         $full_name = trim($_POST["full_name"] ?? "");
         if ($full_name === '') {
             echo json_encode([

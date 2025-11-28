@@ -31,6 +31,7 @@ class AdminController
             die("Access Denied");
         }
 
+        //get page from query string 
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $limit = 10;
 
@@ -80,6 +81,7 @@ class AdminController
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $limit = 15;
         $offset = ($page - 1) * $limit;
+        
         $allOrders = $this->orderService->getAllOrders();
         $totalOrders = count($allOrders);
         $totalPages = ceil($totalOrders / $limit);

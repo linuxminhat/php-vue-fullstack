@@ -69,8 +69,11 @@ class CategoryController extends BaseController
         if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
             $data = $_POST;
         }
+
+        //get id and name from request 
         $id = (int)($data['id'] ?? 0);
         $name = trim($data["name"] ?? "");
+
         if ($id < 0 || $name === '') {
             $this->json([
                 "success" => false,

@@ -23,6 +23,7 @@ class CartItemRepository extends BaseRepository
         return $ci;
     }
 
+    //check product in cart ? 
     public function findItem(int $cart_id, int $product_id): ?CartItem
     {
         $stmt = $this->db->prepare("

@@ -18,6 +18,7 @@ class AuthController extends BaseController
         $this->userService = new UserService();
     }
 
+    //view form login 
     public function showLogin(): void
     {
         \App\Core\View::render('auth.login', [
@@ -25,6 +26,7 @@ class AuthController extends BaseController
         ], 'auth');
     }
 
+    //view form register 
     public function showRegister(): void
     {
         \App\Core\View::render('auth.register', [

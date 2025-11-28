@@ -9,6 +9,7 @@ class Router
         'POST' => [],
     ];
 
+    //sign up get route 
     public function get(string $path, array $handler): void
     {
         $this->routes['GET'][$path] = $handler;
@@ -23,11 +24,14 @@ class Router
     {
         $path = parse_url($uri, PHP_URL_PATH);
         if (isset($this->routes[$method][$path])) {
+            //get handler of route 
             [$class, $action] = $this->routes[$method][$path];
             $controller = new $class();
             call_user_func([$controller, $action]);
             return;
         }
+
+        //dynamic route 
         foreach ($this->routes[$method] as $route => $handler) {
 
             $pattern = preg_replace('#\{[a-zA-Z_]+\}#', '([0-9a-zA-Z-_]+)', $route);
@@ -35,6 +39,7 @@ class Router
 
             if (preg_match($pattern, $path, $matches)) {
 
+                //get parameter 
                 array_shift($matches);
 
                 [$class, $action] = $handler;
